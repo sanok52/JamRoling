@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: e3920a7fe2ee3734aaae266aa4028250
+timeCreated: 1507874536
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103506
+  packageName: LightRays 2D effect
+  packageVersion: 1.03
+  assetPath: Assets/LightRays2D/Script/LightRays2DAbstract.cs
+  uploadId: 247169

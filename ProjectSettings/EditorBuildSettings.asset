@@ -6,11 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/!My/TalkingThings/Game.unity
-    guid: 4b1e9d3eb2693cf4486ddc29d77dd846
-  - enabled: 0
-    path: Assets/!My/empty.unity
-    guid: 5d45915b11a20514ba5606b3a9287cc2
+    path: Assets/!My/ShowSpin/Game.unity
+    guid: 3feae7ed00e31fa409c8b84f42f8d08b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

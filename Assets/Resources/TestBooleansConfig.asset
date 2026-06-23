@@ -17,9 +17,9 @@ MonoBehaviour:
   - ID: IsPlayIntro
     testValue: 0
     releaseValue: 1
-  - ID: IsPlayIntroGirl
+  - ID: PlayGame
     testValue: 1
-    releaseValue: 1
-  - ID: IsPlayStartDialog
-    testValue: 0
-    releaseValue: 1
+    releaseValue: 0
+  - ID: PlayQuiz
+    testValue: 1
+    releaseValue: 0

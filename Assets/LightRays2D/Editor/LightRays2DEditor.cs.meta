@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: fd69545ab3b6ce941a4149713ca2438a
+timeCreated: 1507874729
+licenseType: Store
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103506
+  packageName: LightRays 2D effect
+  packageVersion: 1.03
+  assetPath: Assets/LightRays2D/Editor/LightRays2DEditor.cs
+  uploadId: 247169

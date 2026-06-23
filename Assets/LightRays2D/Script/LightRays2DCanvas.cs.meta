@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a7cdcadc55265914681f36d576448985
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103506
+  packageName: LightRays 2D effect
+  packageVersion: 1.03
+  assetPath: Assets/LightRays2D/Script/LightRays2DCanvas.cs
+  uploadId: 247169

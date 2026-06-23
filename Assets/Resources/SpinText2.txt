@@ -1,0 +1,17 @@
+ID	Category	RU_Text	EN_Text	CorrectRU	CorrectEN	Wrong1RU	Wrong1EN	Wrong2RU	Wrong2EN	Wrong3RU	Wrong3EN
+quiz_easy_1	Easy	Сколько планет в Солнечной системе?	How many planets are in the Solar System?	8	8	9	9	7	7	10	10
+quiz_easy_2	Easy	Столица Франции?	What is the capital of France?	Париж	Paris	Лондон	London	Рим	Rome	Берлин	Berlin
+quiz_easy_3	Easy	Яблоко упало ему на голову, и он придумал закон. Кто это?	An apple fell on his head and he discovered the law of gravity. Who is he?	Исаак Ньютон	Isaac Newton	Эйнштейн	Einstein	Архимед	Archimedes	Галилей	Galileo
+quiz_easy_4	Easy	Как называются существа, которые преследуют игроков в этой игре?	What are the creatures that chase the players in this game?	Адские Псы	Hellhounds	Волки	Wolves	Черти	Demons	Кролики	Rabbits
+quiz_easy_5	Easy	Как называется азартная игра с вращающимся колесом?	What is the name of the gambling game with a spinning wheel?	Рулетка	Roulette	Покер	Poker	Блэкджек	Blackjack	Кости	Dice
+quiz_medium_1	Medium	Сколько кругов было в Аду Данте?	How many circles are there in Dante's Inferno?	9	9	7	7	8	8	10	10
+quiz_medium_2	Medium	Как звали первого убитого человека согласно Библии?	What was the name of the first murdered person according to the Bible?	Авель	Abel	Каин	Cain	Адам	Adam	Сиф	Seth
+quiz_medium_3	Medium	Как звали трёхглавого пса, охраняющего вход в Аид?	What was the name of the three-headed dog guarding the entrance to Hades?	Цербер	Cerberus	Орфей	Orpheus	Харон	Charon	Геракл	Hercules
+quiz_medium_4	Medium	Какой древнегреческий бог является повелителем мёртвых?	Which ancient Greek god is the ruler of the dead?	Аид	Hades	Зевс	Zeus	Посейдон	Poseidon	Гермес	Hermes
+quiz_hard_1	Hard	Какой химический состав Солнца?	What is the chemical composition of the Sun?	Водород и гелий	Hydrogen and helium	Кислород и углерод	Oxygen and carbon	Железо и никель	Iron and nickel	Азот и неон	Nitrogen and neon
+quiz_hard_2	Hard	В каком году было крестьянское восстание Уота Тайлера?	In what year was the Peasants' Revolt of Wat Tyler?	1381	1381	1348	1348	1415	1415	1453	1453
+quiz_hard_3	Hard	Кто написал Некрономикон?	Who wrote the Necronomicon?	Абдул Альхазред	Abdul Alhazred	Говард Лавкрафт	H.P. Lovecraft	Ктулху	Cthulhu	Алистер Кроули	Aleister Crowley
+quiz_hard_4	Hard	Как переводится фраза с латыни: Si vis pacem, para bellum?	How is the Latin phrase Si vis pacem, para bellum translated?	Хочешь мира — готовься к войне	If you want peace, prepare for war	Кто сильнее — тот прав	Might makes right	Мир во всём мире	Peace in the world	Смерть врагам	Death to enemies
+quiz_hard_5	Hard	Как назывался первый суперконтинент Земли?	What was the name of the first supercontinent on Earth?	Пангея	Pangaea	Гондвана	Gondwana	Лавразия	Laurasia	Родиния	Rodinia
+quiz_hard_6	Hard	Почему Луна всегда обращена к Земле одной стороной?	Why is the Moon always facing the Earth with the same side?	Приливный захват (синхронное вращение)	Tidal locking (synchronous rotation)	Из-за гравитации Солнца	Because of the Sun's gravity	Луна не вращается	The Moon does not rotate	Из-за атмосферы Земли	Because of Earth's atmosphere
+quiz_hard_7	Hard	Как называется квантовый эффект, при котором частица проходит сквозь потенциальный барьер?	What is the quantum effect in which a particle passes through a potential barrier?	Туннелирование	Tunneling	Суперпозиция	Superposition	Квантовая запутанность	Quantum entanglement	Декогеренция	Decoherence

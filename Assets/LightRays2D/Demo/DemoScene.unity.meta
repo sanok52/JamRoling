@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fd6ecaf5b4a62d849b03b8cfa751049e
+timeCreated: 1507885536
+licenseType: Store
+DefaultImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103506
+  packageName: LightRays 2D effect
+  packageVersion: 1.03
+  assetPath: Assets/LightRays2D/Demo/DemoScene.unity
+  uploadId: 247169

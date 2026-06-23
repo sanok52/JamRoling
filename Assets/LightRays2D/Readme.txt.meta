@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6845ecb6556dc6547b5afce6b5833fae
+timeCreated: 1509141741
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 103506
+  packageName: LightRays 2D effect
+  packageVersion: 1.03
+  assetPath: Assets/LightRays2D/Readme.txt
+  uploadId: 247169
