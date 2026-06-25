@@ -27,7 +27,7 @@ public class MusicManager
 
     public void PlayMusic (string id, float durationFade = 1f)
     {
-        musicSource.DOFade(0.25f, durationFade);
+        musicSource.DOFade(0.45f, durationFade);
         musicSource.Play(musics[id]);
     }
 }

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SFXData
   MusicGamePlay:
   - ID: GamePlay
-    clip: {fileID: 8300000, guid: cccae9b27ef904a409c25321fe1a5f21, type: 3}
+    clip: {fileID: 8300000, guid: 0381d4e91f8f4764884cd2c67cdfdf75, type: 3}
     additionClips: []
     volume: 0.25
     pitch: 1
