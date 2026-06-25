@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,13 +15,13 @@ public class SpinGameFlow : MonoBehaviour
 
     private Dictionary<int, int> killAtRound = new Dictionary<int, int>()
     {
-        { 0, 5 },
-        { 1, 5 },
-        { 2, 5 },
-        { 3, 5 },
-        { 4, 5 },
-        { 5, 5 },
-        { 6, 5 }
+        { 0, 10 },
+        { 1, 10 },
+        { 2, 10 },
+        { 3, 10 },
+        { 4, 10 },
+        { 5, 10 },
+        { 6, 10 }
     };
 
 
@@ -29,50 +30,59 @@ public class SpinGameFlow : MonoBehaviour
     int[] fortuneOption3 = new int[] { 7 };
     int[] fortuneOption4 = new int[] { 5 };
 
-    private float delayKill = 10f;
+    private float delayKill = 7f;
     private float randomEventsDealy = 16f;
+
+    private float playerDeltaObesrv;
 
     public void Init()
     {
         G.FortuneWhell.gameObject.SetActive(false);
-
         G.spinGamePlay.OnSpin += OnSpinWork;
+        G.GamerManager.OnGamerDead += OnGamerDeadWork;
+        G.LeaderBoardUI.OnLeadersChanged += LeadersChangedWork;
+
+        DictorSpeachManager.SetVariable("Player_Name", "N-451");
 
         StartCoroutine(GameFlowRoutine());
         InitFortuneWhell();
     }
-
 
     private IEnumerator GameFlowRoutine()
     {
         if (TestBooleans.GetValue("IsPlayIntro"))
             yield return IntroRoutine(); //Вступление
 
-        while (!isWin && !isDead)
+        if (TestBooleans.GetValue("IsPlayGame"))
         {
-            if (TestBooleans.GetValue("PlayGame"))
+            while (!isWin && !isDead)
             {
-                yield return WaitPlayerGrap(); //Игра готова к началу, ждём игрока
-                yield return GameRoutine(); //Процесс игры ("Волки проснулись")
-            }
+                if (TestBooleans.GetValue("PlayGame"))
+                {
+                    yield return WaitPlayerGrap(); //Игра готова к началу, ждём игрока
+                    yield return GameRoutine(); //Процесс игры ("Волки проснулись")
+                }
 
-            if (isWin || isDead)
+                if (isWin || isDead)
                     break;
 
-            if (TestBooleans.GetValue("PlayQuiz"))
-            {
-                yield return QuizRoutine(); //Викторина ("Волки засыпают")
+                if (TestBooleans.GetValue("PlayQuiz"))
+                {
+                    yield return QuizRoutine(); //Викторина ("Волки засыпают")
+                }
             }
         }
 
-        if (isWin)
+        StopCoroutine("RandomEventsRoutine");
+        StopCoroutine("FortuneWhellRoutine");
+        StopCoroutine("GamerUpdateRoutine");
+
+        if (isWin || TestBooleans.GetValue("IsWin"))
             yield return WinRoutine(); //Игрок победил
     }
 
     private IEnumerator IntroRoutine()
     {
-        Debug.Log("IntroRoutine");
-
         var list = DictorSpeachManager.Speeches["Narrative_Intro"];
         foreach (var item in list)
             yield return Speak(item.GetText(DictorSpeachManager.language), item.AnimID);
@@ -102,8 +112,11 @@ public class SpinGameFlow : MonoBehaviour
     private IEnumerator GameRoutine()
     {
         isGamePlay = true;
+        SetGameMode(SpinGameMode.None, true);
+
         StartCoroutine(RandomEventsRoutine());
         StartCoroutine(FortuneWhellRoutine());
+        StartCoroutine(GamerUpdateRoutine());
 
         StartCoroutine(SpeakIDRoutine("Dogs_Awake"));
         G.MusicManager.PlayMusic("GamePlay", 5f);
@@ -114,19 +127,45 @@ public class SpinGameFlow : MonoBehaviour
         if (G.GamerManager.CountGamers == 2)
             waitKill = killAtRound * delayKill;
 
+        G.GamerManager.SetPlayState(true);
+        
+        foreach (var gamer in G.GamerManager.SpinGamers.Values)
+        {
+            if (gamer.IsDead)
+                continue;
+            gamer.View.WhellAnim();
+        }
+
         int targetCount = G.GamerManager.CountGamers - killAtRound;
         while (G.GamerManager.CountGamers > 1 && G.GamerManager.CountGamers > targetCount)
         {
             yield return new WaitForSeconds(waitKill);
             KillLast();
             Debug.Log($"{round}: {G.GamerManager.CountGamers}/{targetCount}");
+
+            if (isDead)
+                yield break;
         }
+
+        G.GamerManager.SetPlayState(false);
 
         if (G.GamerManager.CountGamers == 1)
             SetWin();
 
         isGamePlay = false;
+
         G.MusicManager.StopMusic();
+        SetGameMode(SpinGameMode.None, true);
+
+        foreach (var gamer in G.GamerManager.SpinGamers.Values)
+        {
+            if (gamer.IsDead)
+                continue;
+            gamer.View.IdleAnim();
+        }
+
+        yield return SpeakIDRoutine("Dogs_Sleep");
+
         round++;
     }
 
@@ -237,7 +276,9 @@ public class SpinGameFlow : MonoBehaviour
         yield return new WaitForSeconds(1f);
     }
 
-    public enum SpinGameMode { None }
+    public enum SpinGameMode { None, Clock, Unclock, Fog,
+        DevicePlayerBreak
+    }
     public SpinGameMode GameMode { get; private set; }
 
     private IEnumerator RandomEventsRoutine()
@@ -247,8 +288,9 @@ public class SpinGameFlow : MonoBehaviour
         while (isGamePlay)
         {
             yield return new WaitForSeconds(randomEventsDealy);
-            yield return new WaitWhile(() => !PlayerSpinIsWork());
-            RandomGameEventInvoke();
+            yield return new WaitWhile(() => !PlayerSpinIsWork() && isGamePlay);
+            if(isGamePlay)
+                RandomGameEventInvoke();
         }
     }
 
@@ -290,15 +332,29 @@ public class SpinGameFlow : MonoBehaviour
         }
     }
 
+    private float lastRandomQuips = 0;
+    private IEnumerator GamerUpdateRoutine()
+    {
+        G.GamerManager.SetPlayState(true);
+        while (isGamePlay)
+        {
+            G.GamerManager.Update();
+
+            if(Time.time - lastTimeSpeach > 6f && Time.time - lastRandomQuips > 20f)
+            {
+                StartCoroutine(SpeakIDRoutine("Random_Quips"));
+                lastRandomQuips = Time.time;
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+        G.GamerManager.SetPlayState(false);
+    }
+
     private void PlayerFortuneWhell()
     {
         G.FortuneWhell.Restart();
-
-    }
-
-    private void RandomGameEventInvoke()
-    {
-        //Вызываем случайное событие/смену правил
+        StartCoroutine(SpeakIDRoutine("Fortune_Wheel"));
     }
 
     private bool PlayerSpinIsWork()
@@ -308,7 +364,12 @@ public class SpinGameFlow : MonoBehaviour
 
     private IEnumerator WinRoutine()
     {
-        Debug.Log("WIN!");
+        G.MusicManager.StopMusic();
+
+        var list = DictorSpeachManager.Speeches["Final_Win_Speech"];
+        foreach (var item in list)
+            yield return Speak(item.GetText(DictorSpeachManager.language), item.AnimID);
+
         yield break;
         //Катсцена
     }
@@ -326,10 +387,13 @@ public class SpinGameFlow : MonoBehaviour
         if (coroutineSpeak != null)
             StopCoroutine(coroutineSpeak);
 
+        lastTimeSpeach = Time.time;
         coroutineSpeak = StartCoroutine(SpeakWork(text, dictorAnim));
         yield return coroutineSpeak;
 
         coroutineSpeak = null;
+        yield return new WaitForSeconds(1f);
+        G.DictorAnimation.SetAnimation("Empty");
     }
 
     private IEnumerator SpeakWork(string text, string dictorAnim)
@@ -340,16 +404,114 @@ public class SpinGameFlow : MonoBehaviour
         G.DictorTextTyper.ClearText(100);
     }
 
+    private void RandomGameEventInvoke()
+    {
+        SetGameMode(Utils.GetRandomEnumValue(GameMode), false);
+    }
+
     private void SetGameMode(SpinGameMode spinMode, bool withoutDictor)
     {
-        var prevMode = GameMode;
-
-        GameMode = spinMode;
-
-        if (withoutDictor)
+        if (spinMode == SpinGameMode.DevicePlayerBreak)
             return;
 
-        ///Слова диктора, обозначающие стадию
+        var prevMode = GameMode;        
+
+        if (playerDeltaObesrv > 0f && spinMode == SpinGameMode.Unclock)
+            spinMode = SpinGameMode.Clock;
+        else if(playerDeltaObesrv < 0f && spinMode == SpinGameMode.Clock)
+            spinMode = SpinGameMode.Unclock;
+
+
+        GameMode = spinMode;
+        G.GameModeUI.SetMode(spinMode);
+
+
+        Vector2 speedAnim =  new Vector2(0, 0);
+        List<string> triggerAnim = new List<string>() { };
+        switch (spinMode)
+        {
+            case SpinGameMode.None:
+                switch (prevMode)
+                {
+                    case SpinGameMode.Clock:
+                        //StartCoroutine(SpeakIDRoutine("Direction_Change"));
+                        break;
+                    case SpinGameMode.Unclock:
+                        //StartCoroutine(SpeakIDRoutine("Direction_Change"));
+                        break;
+                    case SpinGameMode.Fog:
+                        if (!withoutDictor)
+                            StartCoroutine(SpeakIDRoutine("Fog_End"));
+                        break;
+
+                    case SpinGameMode.DevicePlayerBreak:
+                        if (!withoutDictor)
+                            StartCoroutine(SpeakIDRoutine("Device_Fixed"));
+                        break;
+
+                    default:
+                        break;
+                }
+
+                speedAnim = isGamePlay ? new Vector2(1.4f, 2f) : new Vector2(0.95f, 1.1f);
+                if (isGamePlay)
+                {
+                    triggerAnim.Add("WhellRight");
+                    triggerAnim.Add("WhellLeft");
+                }else
+                    triggerAnim.Add("Idle");
+
+                break;
+
+            case SpinGameMode.Clock:
+                if (!withoutDictor)
+                    StartCoroutine(SpeakIDRoutine("Direction_Change"));
+
+                speedAnim = new Vector2(1.4f, 2f);
+                triggerAnim.Add("WhellLeft");
+
+                break;
+
+            case SpinGameMode.Unclock:
+                if (!withoutDictor)
+                    StartCoroutine(SpeakIDRoutine("Direction_Change"));
+
+                speedAnim = new Vector2(1.4f, 2f);
+                triggerAnim.Add("WhellRight");
+
+                break;
+
+            case SpinGameMode.Fog:
+                if (!withoutDictor)
+                    StartCoroutine(SpeakIDRoutine("Fog_Start"));
+
+                speedAnim = new Vector2(0.15f, 0.3f);
+                triggerAnim.Add("WhellRight");
+                triggerAnim.Add("WhellLeft");
+
+                break;
+
+            case SpinGameMode.DevicePlayerBreak:
+                if (!withoutDictor)
+                    StartCoroutine(SpeakIDRoutine("Device_Broken"));
+                break;
+
+            default:
+                break;
+        }
+
+
+        if (speedAnim != Vector2.zero)
+        {
+            foreach (var gamer in G.GamerManager.SpinGamers.Values)
+            {
+                if (gamer.IsDead)
+                    continue;
+
+                gamer.View.TriggerAnimation(triggerAnim.ToArray().RandomElement());
+                gamer.View.SetSpeedAnim(UnityEngine.Random.Range(speedAnim.x, speedAnim.y));
+            }
+        }
     }
 
     float deltaSumQuater = 0f;
@@ -367,6 +529,15 @@ public class SpinGameFlow : MonoBehaviour
             delta = -delta;
         }
 
+        playerDeltaObesrv += delta;
+        playerDeltaObesrv = Mathf.Clamp(playerDeltaObesrv, -1000f, 1000f);
+
+        if (GameMode == SpinGameMode.Fog && Mathf.Abs(delta) >= 8f)
+        {
+            Shtraf(0.15f);
+            return;
+        }
+
         deltaSumQuater += delta;
 
         while (Mathf.Abs(deltaSumQuater) >= 90f)
@@ -374,6 +545,17 @@ public class SpinGameFlow : MonoBehaviour
             AddQuatarForEvent(deltaSumQuater, Mathf.Sign(deltaSumQuater) == -1);
             deltaSumQuater -= deltaSumQuater > 0 ? 90f : -90f;
         }
+    }
+
+    private float prevShtraf = 0f;
+    private void Shtraf(float coef)
+    {
+        if(Time.time - prevShtraf < 1f)
+            return;
+
+        G.GamerManager.PlayerProgress(-(int)(50 * coef));
+        G.GamerManager.SpinGamers["Player"].View.Shtraf();
+        prevShtraf = Time.time;
     }
 
     private int r4;
@@ -398,14 +580,38 @@ public class SpinGameFlow : MonoBehaviour
 
     private void InvokeRotateEvent(SpinRotateEventType r4, bool isClock)
     {
+        if (!isGamePlay)
+            return;
+
+        bool equalGameMode = true;
+        switch (GameMode) { 
+            case SpinGameMode.Clock:
+                equalGameMode = isClock;
+                break;
+            case SpinGameMode.Unclock:
+                equalGameMode = !isClock;
+                break;
+            case SpinGameMode.Fog:
+                break;
+            //case SpinGameMode.DevicePlayerBreak:
+                //return;
+            default:
+                break;
+        }
+
         switch (r4)
         {
             case SpinRotateEventType.R4:
+                if(GameMode == SpinGameMode.Fog && Time.time - prevShtraf > 1.5f)
+                    G.GamerManager.PlayerProgress(25);
                 break;
             case SpinRotateEventType.R2:
                 break;
             case SpinRotateEventType.R1:
-                G.GamerManager.PlayerProgress(1);
+                if (equalGameMode)
+                    G.GamerManager.PlayerProgress(1);
+                else
+                    Shtraf(0.3f);
                 break;
             default:
                 break;
@@ -445,6 +651,33 @@ public class SpinGameFlow : MonoBehaviour
         }
 
         G.FortuneContent.SetChoices(choices.ToArray());
+    }
+
+    float lastTimeSpeach = 0f;
+    private void OnGamerDeadWork(SpinGamerManager.SpinGamer gamer)
+    {
+        DictorSpeachManager.SetVariable("Last_Kill_Name", gamer.Name);
+        if (gamer.ID == "Player")
+        {
+            PlayerDead();
+            return;
+        }
+
+        if (UnityEngine.Random.Range(0, 100f) > 80f && Time.time - lastTimeSpeach  > 2f)
+            StartCoroutine(SpeakIDRoutine("Someone_Killed"));
+    }
+
+    private void PlayerDead()
+    {
+        isDead = true;
+        StartCoroutine(SpeakIDRoutine("Someone_Killed"));
+    }
+
+    private void LeadersChangedWork(string name)
+    {
+        DictorSpeachManager.SetVariable("Leader_Name", name);
+        if (Time.time - lastTimeSpeach > 12f)
+            StartCoroutine(SpeakIDRoutine("New_Leader"));
     }
 }
 

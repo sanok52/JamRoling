@@ -1,14 +1,23 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpinInterManager : MonoBehaviour
 {
     [SerializeField] private LayerMask layersInteraction;
+
+    [Space]
+    [SerializeField] private Image imagePoint;
+    [SerializeField] private Sprite spriteNone;
+    [SerializeField] private Sprite spriteCanGrap;
+    [SerializeField] private Sprite spriteGrap;
+
     private CameraControl control;
     private new Camera camera;
 
     private ISpinInterHold currentHold;
+    private Vector3 offset;
 
     public event Action<ISpinInterHold> OnHold;
 
@@ -35,22 +44,67 @@ public class SpinInterManager : MonoBehaviour
         Ray ray = new Ray(camera.transform.position, camera.transform.forward);
         if (Physics.Raycast(ray, out RaycastHit hitInfo, Mathf.Infinity, layersInteraction))
         {
-            if (Input.GetKey(KeyCode.Mouse0))
+            if (currentHold != null)
             {
-                if (currentHold != null)
-                    return;
+                UpdatePointUIGrap();
+                return;
+            }
 
-                if (hitInfo.transform.TryGetComponent(out ISpinInterUse spinInterUse) && (spinInterUse as MonoBehaviour).enabled)
+            if (hitInfo.transform.TryGetComponent(out ISpinInterUse spinInterUse) && (spinInterUse as MonoBehaviour).enabled)
+            {
+                if (Input.GetKey(KeyCode.Mouse0))
                     spinInterUse.InterUse();
+            }else if (hitInfo.transform.TryGetComponent(out ISpinInterHold spinInterHold) && (spinInterHold as MonoBehaviour).enabled)
+            {
+                imagePoint.sprite = spriteCanGrap;
+                imagePoint.SetNativeSize();
+                imagePoint.color = Color.white;
+                BreakPointToCenter();
 
-
-                if (hitInfo.transform.TryGetComponent(out ISpinInterHold spinInterHold) && (spinInterHold as MonoBehaviour).enabled)
+                if (Input.GetKey(KeyCode.Mouse0))
                 {
                     Hold(spinInterHold);
-                    Debug.Log($"Hold {hitInfo.transform.name}");
+                    offset = hitInfo.point - hitInfo.transform.position;
                 }
             }
+            else
+                BreakPointUI();
         }
+        else
+            BreakPointUI();        
+    }
+
+    private void BreakPointUI()
+    {
+        imagePoint.sprite = spriteNone;
+        imagePoint.SetNativeSize();
+        imagePoint.color = Color.yellow;
+        BreakPointToCenter();
+    }
+
+
+    private void UpdatePointUIGrap()
+    {
+        imagePoint.sprite = spriteGrap;
+        imagePoint.SetNativeSize();
+        imagePoint.color = new Color(0.5f, 0.5f, 0.5f, 0.5f);
+
+        Transform target = (currentHold as MonoBehaviour).transform;
+        Vector2 pointOnScreen = Camera.main.WorldToScreenPoint(target.position + offset);
+
+        Canvas canvas = imagePoint.transform.parent.GetComponent<Canvas>();
+        RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+
+        if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, pointOnScreen, cam, out Vector2 localPoint))
+        {
+            imagePoint.transform.localPosition = localPoint;
+        }
+    }
+    private void BreakPointToCenter()
+    {
+        imagePoint.transform.localPosition = Vector2.zero;
     }
 
     private void Hold(ISpinInterHold spinInterHold)
@@ -67,6 +121,7 @@ public class SpinInterManager : MonoBehaviour
         currentHold.InterHoldExit();
         currentHold = null;
         control.enabled = true;
+        BreakPointUI();
     }
 }
 

@@ -11,6 +11,10 @@ public class SpinLeaderBoardUI : MonoBehaviour
     [SerializeField] private TMP_Text secondWallTmp;
     [SerializeField] private int countInOneWall = 20;
 
+    private string prevLeader = "Player";
+
+    public event Action<string> OnLeadersChanged;
+
     public void ChangeProgeressWork(Dictionary<string, int> dictionary)
     {
         List<LeaderboardData> datas = new List< LeaderboardData >();
@@ -31,6 +35,12 @@ public class SpinLeaderBoardUI : MonoBehaviour
         {
             var data = sorted[i];
             WriteTextAtWall(leadersTmp, i, data);
+        }
+
+        if (sorted[0].Name != prevLeader)
+        {
+            prevLeader = sorted[0].Name;
+            OnLeadersChanged?.Invoke(prevLeader);
         }
 
         firstWallTmp.text = "";

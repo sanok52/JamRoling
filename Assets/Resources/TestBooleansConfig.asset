@@ -19,7 +19,13 @@ MonoBehaviour:
     releaseValue: 1
   - ID: PlayGame
     testValue: 1
-    releaseValue: 0
+    releaseValue: 1
   - ID: PlayQuiz
     testValue: 1
+    releaseValue: 1
+  - ID: IsPlayGame
+    testValue: 1
+    releaseValue: 1
+  - ID: IsWin
+    testValue: 0
     releaseValue: 0

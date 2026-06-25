@@ -155,6 +155,15 @@ public static class DictorSpeachManager
         else
             Varibles[id] = value;
     }
+
+    public static string ReplaceVariable(string text)
+    {
+        foreach (var variable in Varibles)
+        {
+            text = text.Replace("[" + variable.Key + "]", variable.Value);
+        }
+        return text;
+    }
 }
 
 // --- Классы данных (без изменений) ---
@@ -170,8 +179,8 @@ public class SpinDictorSpeech
     {
         switch (language)
         {
-            case Language.RU: return textRU;
-            case Language.EN: return textENG;
+            case Language.RU: return DictorSpeachManager.ReplaceVariable(textRU);
+            case Language.EN: return DictorSpeachManager.ReplaceVariable(textENG);
             default: return "not implemented";
         }
     }

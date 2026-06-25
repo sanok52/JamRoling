@@ -1,65 +1,70 @@
 ID (eng)	Category_EN	RU	ENG	Animation
 intro_welcome	Narrative_Intro	Добро пожаловать на Spin on Pin!	Welcome to Spin on Pin!	Pride
-intro_welcome1	Narrative_Intro	На этот раз у нас в гостях несколько заблудших душ с разных стран и материков. Урожай богатый — ничего не скажешь.	Welcome to Spin on Pin! This time we have several lost souls from different countries and continents. A rich harvest, no doubt.	Empty
-intro_welcome2	Narrative_Intro	Вы умерли, дорогие гости, и ваши правительства продали вас на вечные муки для поддержания нашего с ними давнего соглашения. Но принимать души просто так будет скучно, поэтому вы будете соревноваться друг с другом за спасение единственного, что у вас осталось! Отнеситесь к этому серьёзно... Очень серьёзно.	You are dead, dear guests, and your governments sold you into eternal torment to uphold our long-standing agreement with them. But receiving souls without fun is boring, so you will compete against each other to save the only thing you have left! Take this seriously… Very seriously.	Pride
-intro_explain	Narrative_Intro	Начнём с азов. По вашему запаху уже мчатся Адские Псы, и вам нужно как можно быстрее крутить колесо. Самого последнего ждёт его именной котёл по адресу: улица Вечных мук, 14.	Let's start with the basics. The Hellhounds are already racing towards your scent, and you need to spin the wheel as fast as you can – the last one will be greeted by his personal cauldron at 14 Eternal Torment Street.	Empty
-intro_explain	Narrative_Intro	Вас будет ждать ещё много сюрпризов, что поднимет настроение и мне, и многим другим зрителям, но вы о них узнаете только в процессе... Приступим!	Many more surprises await you, which will lift my spirits and those of many other viewers, but you'll only find out about them along the way… Let's begin!	Pride
+intro_welcome1	Narrative_Intro	На этот раз у нас в гостях несколько заблудших душ с разных стран и материков. Урожай богатый — ничего не скажешь.	Welcome to Spin on Pin! This time we have several lost souls from different countries and continents. A rich harvest, no doubt.	OpenHand
+intro_welcome2	Narrative_Intro	Вы умерли, дорогие гости, и ваши правительства продали вас на вечные муки для поддержания нашего с ними давнего соглашения. Но принимать души просто так будет скучно, поэтому вы будете соревноваться друг с другом за спасение единственного, что у вас осталось! Отнеситесь к этому серьёзно... Очень серьёзно.	You are dead, dear guests, and your governments sold you into eternal torment to uphold our long-standing agreement with them. But receiving souls without fun is boring, so you will compete against each other to save the only thing you have left! Take this seriously… Very seriously.	Cool
+intro_explain	Narrative_Intro	Начнём с азов. По вашему запаху уже мчатся Адские Псы, и вам нужно как можно быстрее крутить колесо. Самого последнего ждёт его именной котёл по адресу: улица Вечных мук, 14.	Let's start with the basics. The Hellhounds are already racing towards your scent, and you need to spin the wheel as fast as you can – the last one will be greeted by his personal cauldron at 14 Eternal Torment Street.	Devil
+intro_explain	Narrative_Intro	Вас будет ждать ещё много сюрпризов, что поднимет настроение и мне, и многим другим зрителям, но вы о них узнаете только в процессе... Приступим!	Many more surprises await you, which will lift my spirits and those of many other viewers, but you'll only find out about them along the way… Let's begin!	Messia
 dogs_awake_1	Dogs_Awake	Адские Псы! Адские Псы! Спасайся кто может!	Hellhounds! Hellhounds! Run for your lives!	Evil
 dogs_awake_2	Dogs_Awake	Псы проснулись и жаждут мяса!	The hounds are awake and crave flesh!	Evil
 dogs_awake_3	Dogs_Awake	Одно слово: Бегите!	One word: Run!	Evil
-dogs_sleep_1	Dogs_Sleep	Псы насытились и спят...	The hounds are full and sleeping...	Evil
-dogs_sleep_2	Dogs_Sleep	Можно передохнуть... по поры — до времени.	You can catch your breath... for now – until the next time.	Evil
-dogs_sleep_3	Dogs_Sleep	Поберегите силы, друзья, они вам ещё пригодятся...	Save your strength, friends, you'll need it later...	Evil
-direction_1	Direction_Change	А теперь... в другую сторону!	And now... the other way!	Empty
-direction_2	Direction_Change	Назад!	Back!	Empty
-direction_3	Direction_Change	Не туда — не туда!	Wrong way – wrong way!	Empty
-broken_1	Device_Broken	Ха... похоже, [Player_Name], сегодня тебе не везёт!	Ha... looks like [Player_Name], luck isn't on your side today!	Empty
-broken_2	Device_Broken	Не спеши, [Player_Name], сейчас к тебе придут наши инженеры... это был сарказм, если что.	Don't rush, [Player_Name], our engineers are coming to you right now... that was sarcasm, by the way.	Empty
-broken_3	Device_Broken	Ты что, [Player_Name], помереть захотел?	What, [Player_Name], do you want to die?	Empty
-fixed_1	Device_Fixed	Кажется, [Player_Name] не из собачников.	Looks like [Player_Name] is not a dog person.	Empty
-fixed_2	Device_Fixed	Что? Так быстро?!	What? So fast?!	Empty
-fixed_3	Device_Fixed	Эй, [Player_Name], я поставил на твой проигрыш!	Hey, [Player_Name], I bet on your loss!	Empty
-fortune_1	Fortune_Wheel	Крути колесо — поцелуй удачу!	Spin the wheel – kiss luck!	Empty
-fortune_2	Fortune_Wheel	Кому сегодня повезёт?	Who will be lucky today?	Empty
-fortune_3	Fortune_Wheel	Даже в Аду может повезти...	Even in Hell, luck can strike...	Empty
-leader_1	New_Leader	Хм... [Leader_Name] вырывается вперёд!	Hm... [Leader_Name] is pulling ahead!	Empty
-leader_2	New_Leader	[Leader_Name] на первом месте! Он нас всех удивляет!	[Leader_Name] is in first place! He amazes us all!	Empty
-leader_3	New_Leader	Эй, [Leader_Name], дай и другим место!	Hey, [Leader_Name], give others a chance!	Empty
-leader_4	New_Leader	[Leader_Name] нас всех удивляет!	[Leader_Name] surprises us all!	Empty
-leader_5	New_Leader	[Leader_Name], ты чего, жить захотел?	[Leader_Name], what, did you suddenly want to live?	Empty
-leader_6	New_Leader	[Leader_Name], не так быстро, на тебя никто не ставил!	[Leader_Name], not so fast – nobody bet on you!	Empty
-leader_7	New_Leader	Я ставил на другого, ну да ладно...	I bet on someone else, oh well...	Empty
-leader_8	New_Leader	Молодец, [Leader_Name], мамочка тобой гордится. Она двумя уровнями ниже, можешь к ней заглянуть.	Well done, [Leader_Name], your mummy is proud of you. She's two levels below, feel free to drop by.	Empty
-leader_9	New_Leader	Хорошая работа, [Leader_Name], но не зазнавайся!	Good job, [Leader_Name], but don't get cocky!	Empty
-kill_1	Someone_Killed	И псы сыты, и овцы в гонке.	The hounds are fed, and the sheep are in the race.	Empty
-kill_2	Someone_Killed	Кажется, вас было больше...	It seems there were more of you...	Empty
-kill_3	Someone_Killed	Мы потеряли [Last_Kill_Name], но никому нет дела.	We lost [Last_Kill_Name], but nobody cares.	Empty
-kill_4	Someone_Killed	Кажется, [Last_Kill_Name] потерял шанс увидеть семью...	Looks like [Last_Kill_Name] lost the chance to see his family...	Empty
-kill_5	Someone_Killed	Я ожидал, что [Last_Kill_Name] продержится дольше.	I expected [Last_Kill_Name] to last longer.	Empty
-fog_start_1	Fog_Start	Туман начинается — правила меняются! Скоропыгу ждёт конец!	The fog is rising — the rules are changing! A quick end awaits the swift!	Empty
-fog_start_2	Fog_Start	Туман! Замедляемся-замедляемся!	Fog! Slow down, slow down!	Empty
-fog_start_3	Fog_Start	Туман! Крутите медленнее, чтобы не сбиться с пути!	Fog! Spin slower so you don't lose your way!	Empty
-fog_end_1	Fog_End	Туман упал...	The fog has lifted...	Empty
-fog_end_2	Fog_End	Возвращаемся на круги своя!	Back to the usual grind!	Empty
-fog_end_3	Fog_End	Что вы как черепахи? А ну бегом!	What are you, turtles? Come on, run!	Empty
-random_1	Random_Quips	Кто-нибудь, убейте уже [Player_Name]!	Someone, just kill [Player_Name] already!	Empty
-random_2	Random_Quips	Будет веселее, если вы все остановитесь?	Would it be more fun if you all stopped?	Empty
-random_3	Random_Quips	Кому-нибудь нужен перерыв? Или водички?	Anyone need a break? Or some water?	Empty
-random_4	Random_Quips	Крутите, сосунки!	Spin, suckers!	Empty
-random_5	Random_Quips	В Санкт-Петербурге опять огненный дождь, какая жалость...	In Saint Petersburg, it's raining fire again, what a pity...	Empty
-random_6	Random_Quips	Эй, [Player_Name], не хочешь остановиться?	Hey, [Player_Name], don't you want to stop?	Empty
-random_7	Random_Quips	Ко мне, ко мне, хороший пёс!	Come here, come here, good boy!	Empty
-random_8	Random_Quips	Я думал, будет скучно, но вы хорошо справляетесь!	I thought it would be boring, but you're doing great!	Empty
-random_9	Random_Quips	Вас не смущает, как здесь жарко?	Doesn't it bother you how hot it is here?	Empty
-random_10	Random_Quips	Что?! Вы не заслужили такого?! Ну так обратитесь в полицию, нытики!	What?! You didn't deserve this?! Well, go complain to the police, whiners!	Empty
-random_11	Random_Quips	Саймон говорит: остановитесь!.. Шутка! Ну-ка, кто повёлся?	Simon says: stop!.. Just kidding! Who fell for that?	Empty
-random_12	Random_Quips	Смотрите, котёнок!	Look, a kitten!	Empty
-random_13	Random_Quips	Последнего в гонке ждёт бесплатное мороженое!	The last one in the race gets free ice cream!	Empty
-random_14	Random_Quips	Может, кого-то из вас убить просто так? Эники-беники...	Maybe just kill one of you for fun? Eeny, meeny, miny, moe...	Empty
-random_15	Random_Quips	А теперь все вместе: I'm on the highway to Hell!	And now all together: I'm on the highway to Hell!	Empty
-random_16	Random_Quips	Держите форму, мы сейчас откроем параллельный эфир на спортивном телеканале!	Stay in shape, we're about to open a parallel broadcast on the sports channel!	Empty
-random_17	Random_Quips	Мы теряем зрителей Ада, а ну кто-нибудь помрите!	We're losing Hell's viewers – come on, someone die already!	Empty
-random_18	Random_Quips	Кто спросил "За что мне это?!"? За дело!	Who asked "Why me?!"? For a reason!	Empty
-random_19	Random_Quips	Жить в Аду так скучно... нужно открыть новое шоу.	Living in Hell is so boring... we need to start a new show.	Empty
-final_speech	Final_Win_Speech	[Player_Name]? Удивительно... Из всех участников ты оказался единственным победителем. Какого тебе понять, что ни один из остальных больше не вернётся назад к семье? Кто-то имел больше, чем ты, кто-то мог получить больше, чем ты... Как теперь будешь ты смотреть на это продажное правительство? Не нравится? А почему?! Нет, [Player_Name], ты не вернёшься назад. Ты возродишься в новом теле и всё забудешь. Аду нужны людские души. Мы сдаём людям оружие и тёмные идеи, а они нам — кровь и души. Учитывая, что люди исчезнут так или иначе, игра для нас беспроигрышная. Но мы с тобой, [Player_Name], ещё увидимся...	[Player_Name]? Amazing... Out of all the participants, you turned out to be the sole winner. How does it feel to know that none of the others will ever return to their families? Some had more than you, some could have gained more than you... How will you now look at that corrupt government? Don't like it? And why?! No, [Player_Name], you won't go back. You will be reborn in a new body and forget everything. Hell needs human souls. We supply people with weapons and dark ideas, and they give us blood and souls. Given that humanity will disappear anyway, this game is a win-win for us. But we'll meet again, [Player_Name]...	Empty
+dogs_sleep_1	Dogs_Sleep	Псы насытились и спят...	The hounds are full and sleeping...	Think
+dogs_sleep_2	Dogs_Sleep	Можно передохнуть... по поры — до времени.	You can catch your breath... for now – until the next time.	Think2
+dogs_sleep_3	Dogs_Sleep	Поберегите силы, друзья, они вам ещё пригодятся...	Save your strength, friends, you'll need it later...	Think3
+direction_1	Direction_Change	А теперь... в другую сторону!	And now... the other way!	TikTak
+direction_2	Direction_Change	Назад!	Back!	TikTak2
+direction_3	Direction_Change	Не туда — не туда!	Wrong way – wrong way!	TikTak
+broken_1	Device_Broken	Ха... похоже, [Player_Name], сегодня тебе не везёт!	Ha... looks like [Player_Name], luck isn't on your side today!	Smile4
+broken_2	Device_Broken	Не спеши, [Player_Name], сейчас к тебе придут наши инженеры... это был сарказм, если что.	Don't rush, [Player_Name], our engineers are coming to you right now... that was sarcasm, by the way.	Smile3
+broken_3	Device_Broken	Ты что, [Player_Name], помереть захотел?	What, [Player_Name], do you want to die?	What
+fixed_1	Device_Fixed	Кажется, [Player_Name] не из собачников.	Looks like [Player_Name] is not a dog person.	Think
+fixed_2	Device_Fixed	Что? Так быстро?!	What? So fast?!	What
+fixed_3	Device_Fixed	Эй, [Player_Name], я поставил на твой проигрыш!	Hey, [Player_Name], I bet on your loss!	Forget
+fortune_1	Fortune_Wheel	Крути колесо — поцелуй удачу!	Spin the wheel – kiss luck!	You
+fortune_2	Fortune_Wheel	Кому сегодня повезёт?	Who will be lucky today?	You2
+fortune_3	Fortune_Wheel	Даже в Аду может повезти...	Even in Hell, luck can strike...	Smile
+leader_1	New_Leader	Хм... [Leader_Name] вырывается вперёд!	Hm... [Leader_Name] is pulling ahead!	InHand
+leader_2	New_Leader	[Leader_Name] на первом месте! Он нас всех удивляет!	[Leader_Name] is in first place! He amazes us all!	Fist
+leader_3	New_Leader	Эй, [Leader_Name], дай и другим место!	Hey, [Leader_Name], give others a chance!	672
+leader_4	New_Leader	[Leader_Name] нас всех удивляет!	[Leader_Name] surprises us all!	Smile2
+leader_5	New_Leader	[Leader_Name], ты чего, жить захотел?	[Leader_Name], what, did you suddenly want to live?	67
+leader_6	New_Leader	[Leader_Name], не так быстро, на тебя никто не ставил!	[Leader_Name], not so fast – nobody bet on you!	AnHead
+leader_7	New_Leader	Я ставил на другого, ну да ладно...	I bet on someone else, oh well...	AnHead2
+leader_8	New_Leader	Молодец, [Leader_Name], мамочка тобой гордится. Она двумя уровнями ниже, можешь к ней заглянуть.	Well done, [Leader_Name], your mummy is proud of you. She's two levels below, feel free to drop by.	Down
+leader_9	New_Leader	Хорошая работа, [Leader_Name], но не зазнавайся!	Good job, [Leader_Name], but don't get cocky!	Siriosly
+kill_1	Someone_Killed	И псы сыты, и овцы в гонке.	The hounds are fed, and the sheep are in the race.	67
+kill_2	Someone_Killed	Кажется, вас было больше...	It seems there were more of you...	Think3
+kill_3	Someone_Killed	Мы потеряли [Last_Kill_Name], но никому нет дела.	We lost [Last_Kill_Name], but nobody cares.	672
+kill_4	Someone_Killed	Кажется, [Last_Kill_Name] потерял шанс увидеть семью...	Looks like [Last_Kill_Name] lost the chance to see his family...	NoRespect
+kill_5	Someone_Killed	Я ожидал, что [Last_Kill_Name] продержится дольше.	I expected [Last_Kill_Name] to last longer.	Think4
+fog_start_1	Fog_Start	Туман начинается — правила меняются! Скоропыгу ждёт конец!	The fog is rising — the rules are changing! A quick end awaits the swift!	No
+fog_start_2	Fog_Start	Туман! Замедляемся-замедляемся!	Fog! Slow down, slow down!	No
+fog_start_3	Fog_Start	Туман! Крутите медленнее, чтобы не сбиться с пути!	Fog! Spin slower so you don't lose your way!	No
+fog_end_1	Fog_End	Туман упал...	The fog has lifted...	Fist
+fog_end_2	Fog_End	Возвращаемся на круги своя!	Back to the usual grind!	Evil
+fog_end_3	Fog_End	Что вы как черепахи? А ну бегом!	What are you, turtles? Come on, run!	Evil
+random_1	Random_Quips	Кто-нибудь, убейте уже [Player_Name]!	Someone, just kill [Player_Name] already!	Fist
+random_2	Random_Quips	Будет веселее, если вы все остановитесь?	Would it be more fun if you all stopped?	Wait
+random_3	Random_Quips	Кому-нибудь нужен перерыв? Или водички?	Anyone need a break? Or some water?	Cool
+random_4	Random_Quips	Крутите, сосунки!	Spin, suckers!	You2
+random_5	Random_Quips	В Санкт-Петербурге опять огненный дождь, какая жалость...	In Saint Petersburg, it's raining fire again, what a pity...	Think2
+random_6	Random_Quips	Эй, [Player_Name], не хочешь остановиться?	Hey, [Player_Name], don't you want to stop?	Smile
+random_7	Random_Quips	Ко мне, ко мне, хороший пёс!	Come here, come here, good boy!	Finger
+random_8	Random_Quips	Я думал, будет скучно, но вы хорошо справляетесь!	I thought it would be boring, but you're doing great!	Pride
+random_9	Random_Quips	Вас не смущает, как здесь жарко?	Doesn't it bother you how hot it is here?	Hot
+random_10	Random_Quips	Что?! Вы не заслужили такого?! Ну так обратитесь в полицию, нытики!	What?! You didn't deserve this?! Well, go complain to the police, whiners!	Evil
+random_11	Random_Quips	Саймон говорит: остановитесь!.. Шутка! Ну-ка, кто повёлся?	Simon says: stop!.. Just kidding! Who fell for that?	Smile4
+random_12	Random_Quips	Смотрите, котёнок!.. Что, никто не обернулся? Ну, неудивительно, что вы все оказались здесь	Look, a kitten!	Deal
+random_13	Random_Quips	Последнего в гонке ждёт бесплатное мороженое!	The last one in the race gets free ice cream!	Smile3
+random_14	Random_Quips	Может, кого-то из вас убить просто так? Эники-беники...	Maybe just kill one of you for fun? Eeny, meeny, miny, moe...	Think3
+random_15	Random_Quips	А теперь все вместе: I'm on the highway to Hell!	And now all together: I'm on the highway to Hell!	Messia
+random_16	Random_Quips	Держите форму, мы сейчас откроем параллельный эфир на спортивном телеканале!	Stay in shape, we're about to open a parallel broadcast on the sports channel!	You
+random_17	Random_Quips	Мы теряем зрителей Ада, а ну кто-нибудь помрите!	We're losing Hell's viewers – come on, someone die already!	You2
+random_18	Random_Quips	Кто спросил "За что мне это?!"? За дело!	Who asked "Why me?!"? For a reason!	Evil
+random_19	Random_Quips	Жить в Аду так скучно... нужно открыть новое шоу.	Living in Hell is so boring... we need to start a new show.	Think4
+final_speech2	Final_Win_Speech	[Player_Name]? Удивительно... Из всех участников ты оказался единственным победителем.	[Player_Name]? Amazing... Out of all the participants, you turned out to be the sole winner.	You
+final_speech3	Final_Win_Speech	Какого тебе осознавать, что остальные больше не вернутся назад к семье? Кто-то имел больше, чем ты, кто-то мог получить больше, чем ты... И как теперь будешь ты смотреть на это продажное правительство?	How does it feel to know that the others will never return to their families? Some had more than you, some could have gained more than you... And how will you now look at that corrupt government?	Deal
+final_speech4	Final_Win_Speech	Не нравится? А почему?!	Don't like it? And why?!	672
+final_speech5	Final_Win_Speech	Нет, [Player_Name], ты не вернёшься назад. Ты возродишься в новом теле и всё забудешь.	No, [Player_Name], you won't go back. You will be reborn in a new body and forget everything.	Deal2
+final_speech6	Final_Win_Speech	Аду нужны людские души. Мы сдаём людям оружие и тёмные идеи, а они нам — кровь и души. Учитывая, что люди исчезнут так или иначе, игра для нас беспроигрышная	Hell needs human souls. We supply people with weapons and dark ideas, and they give us blood and souls. Given that humanity will disappear anyway, this game is a win-win for us.	OpenHand
+final_speech7	Final_Win_Speech	Пока что уходи, [Player_Name]. Но мы с тобой, ещё увидимся...	For now, leave, [Player_Name]. But we'll meet again...	Pride
 wait_player	Wait_Player	Ждём, пока все игроки возьмутся за колесо. Мы же хотим, чтобы игра была честной!	We're waiting for all the players to take hold of the wheel. We want the game to be fair!	Empty

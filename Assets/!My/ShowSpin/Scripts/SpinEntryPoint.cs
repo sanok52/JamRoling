@@ -30,6 +30,7 @@ public static class G
     public static MusicManager MusicManager;
     public static DictorAnimation DictorAnimation;
     public static SpinLeaderBoardUI LeaderBoardUI;
+    public static GameModeUI GameModeUI;
 
     public static SpinObserver spinGamePlay;
 
@@ -48,6 +49,7 @@ public static class G
         SpinInterManager = Object.FindFirstObjectByType<SpinInterManager>();
         DictorAnimation = Object.FindFirstObjectByType<DictorAnimation>();
         LeaderBoardUI = Object.FindFirstObjectByType<SpinLeaderBoardUI>();
+        GameModeUI = Object.FindFirstObjectByType<GameModeUI>();
 
         SpinGameFlow = new GameObject("SpinGameFlow").AddComponent<SpinGameFlow>();
 
