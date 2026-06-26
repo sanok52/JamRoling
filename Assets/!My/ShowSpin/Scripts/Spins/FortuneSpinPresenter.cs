@@ -17,10 +17,13 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
     [SerializeField] private AnimationCurve animationCurve;
     private bool isCanRule;
 
+    [SerializeField] private bool useNoChoice = false;
+
     [SerializeField] private List<string> tags;
     public List<string> Tags => tags;
 
     public event Action OnEndSpin;
+    public event Action OnNoChoice;
 
     private Coroutine coroutine;
 
@@ -29,7 +32,7 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
         spinObserver.OnSpin += SpinWork;
     }
 
-    public void Restart()
+    public void Restart(bool isGamePlay = false)
     {
         gameObject.SetActive(true);
 
@@ -37,11 +40,13 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
         if (coroutine != null)
             StopCoroutine(coroutine);
         transform.DOKill(true);
-        coroutine = StartCoroutine(AnimationRoutine());
+        coroutine = StartCoroutine(AnimationRoutine(isGamePlay));
         deltaNow = 0;
     }
 
-    private IEnumerator AnimationRoutine()
+    [HideInInspector] public bool UpNow;
+
+    private IEnumerator AnimationRoutine(bool isFast = false)
     {
         SetCanRule(false);
 
@@ -55,33 +60,61 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
         SetCanRule(true);
         deltaRotate = 0f;
 
-        yield return new WaitWhile(() => deltaRotate == 0f);
+        bool noChoice = false;
 
-        float wait = 0;
-        while (wait < coefForceDuration)
+        if (useNoChoice)
         {
-            float offsetX = deltaRotate * coefForce *
-                animationCurve.Evaluate(wait / coefForceDuration) * Time.deltaTime;
-
-            //Debug.Log($"{deltaRotate} * {coefForce} * {animationCurve.Evaluate(wait / coefForceDuration)} * {Time.deltaTime}");
-
-            //Debug.Log($"offsetX {offsetX}");
-            spinObserver.SpinMain.AddRotation(offsetX);
-
-            yield return new WaitForEndOfFrame();
-            wait += Time.deltaTime;
+            DOVirtual.DelayedCall(7f, () =>
+            {
+                //Debug.Log("noChoice dv");
+                if(deltaRotate == 0f)
+                    noChoice = true;
+            });
         }
 
-        yield return transform.DOPunchScale(Vector3.one * 0.35f, 0.4f).WaitForCompletion();
-        yield return new WaitForSeconds(3f);
+        yield return new WaitWhile(() => deltaRotate == 0f && !noChoice && !UpNow);
 
-        yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z), 0.25f)
-            .SetEase(Ease.InOutSine).WaitForCompletion();
+        if (!noChoice && !UpNow)
+        {
+            float wait = 0;
+            while (wait < coefForceDuration)
+            {
+                float offsetX = deltaRotate * coefForce *
+                    animationCurve.Evaluate(wait / coefForceDuration) * Time.deltaTime
+                    * (isFast ? 1.8f : 1f);
 
+                //Debug.Log($"{deltaRotate} * {coefForce} * {animationCurve.Evaluate(wait / coefForceDuration)} * {Time.deltaTime}");
+
+                //Debug.Log($"offsetX {offsetX}");
+                spinObserver.SpinMain.AddRotation(offsetX);
+
+                yield return new WaitForEndOfFrame();
+                wait += Time.deltaTime;
+            }
+
+            yield return transform.DOPunchScale(Vector3.one * 0.35f, 0.4f).WaitForCompletion();
+            yield return new WaitForSeconds(isFast ? 0.5f : 3f);
+        }
+
+        var anUp = transform.DOLocalMove(new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z), 0.45f)
+                    .SetEase(Ease.InOutSine).WaitForCompletion();
+        //if (!isFast)
+            yield return anUp;
+
+        if (noChoice && !UpNow)
+        {
+            OnNoChoice?.Invoke();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+        }
+
+        if(!UpNow)
+            OnEndSpin?.Invoke();
+
+        UpNow = false;
         gameObject.SetActive(false);
 
-        OnEndSpin?.Invoke();
-    }
+    }    
 
     private void SetCanRule(bool canRule)
     {

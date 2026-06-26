@@ -1,6 +1,5 @@
-using NUnit.Framework;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 using Object = UnityEngine.Object;
 
 public static class SpinEntryPoint
@@ -16,6 +15,9 @@ public static class SpinEntryPoint
         G.MusicManager.Init();
         G.GamerManager.Init(42);
         G.GamerManager.OnChangeProgress += G.LeaderBoardUI.ChangeProgeressWork;
+        G.ItemExecuter.Init();
+
+        PocketRandomazer.CreatePocket<int>("Random", 15, 21, 31, 45, 55, 69, 81, 99);
 
         G.SpinGameFlow.Init();
     }
@@ -27,6 +29,7 @@ public static class G
     public static SpinGameFlow SpinGameFlow;
     public static SpinGamerManager GamerManager;
     public static SpinInterManager SpinInterManager;
+
     public static MusicManager MusicManager;
     public static DictorAnimation DictorAnimation;
     public static SpinLeaderBoardUI LeaderBoardUI;
@@ -40,30 +43,61 @@ public static class G
     public static ChoiceContent FortuneContent;
     public static ChoiceContent VictorinChoiceContent;
     public static ChoiceContent VictorineAnserContent;
+    public static TextTyper VictorinTextTyper;
 
     public static SpinUpObjectAnimation VictorineAnserAnimation;
+    public static ScreenRemont ScreenRemont;
+    public static ScreenVictorin ScreenVictorin;
+    public static SpinItemExecuter ItemExecuter;
+    public static List<SpinHandle> handlesFixes;
 
     public static void Init()
     {
-        DictorTextTyper = Object.FindFirstObjectByType<TextTyper>();
-        SpinInterManager = Object.FindFirstObjectByType<SpinInterManager>();
-        DictorAnimation = Object.FindFirstObjectByType<DictorAnimation>();
-        LeaderBoardUI = Object.FindFirstObjectByType<SpinLeaderBoardUI>();
-        GameModeUI = Object.FindFirstObjectByType<GameModeUI>();
+        Find();
+        CreateGO();
+        Create();
+        FindAll();
+    }
 
-        SpinGameFlow = new GameObject("SpinGameFlow").AddComponent<SpinGameFlow>();
+    private static void Find()
+    {
+        SpinInterManager = Object.FindFirstObjectByType<SpinInterManager>(FindObjectsInactive.Include);
+        DictorAnimation = Object.FindFirstObjectByType<DictorAnimation>(FindObjectsInactive.Include);
+        LeaderBoardUI = Object.FindFirstObjectByType<SpinLeaderBoardUI>(FindObjectsInactive.Include);
+        GameModeUI = Object.FindFirstObjectByType<GameModeUI>(FindObjectsInactive.Include);
+        ScreenRemont = Object.FindFirstObjectByType<ScreenRemont>(FindObjectsInactive.Include);
+        ScreenVictorin = Object.FindFirstObjectByType<ScreenVictorin>(FindObjectsInactive.Include);
+    }
 
-        GamerManager = new SpinGamerManager();
+    private static void Create()
+    {        GamerManager = new SpinGamerManager();
         MusicManager = new MusicManager();
+    }
 
+    private static void CreateGO()
+    {
+        SpinGameFlow = new GameObject("SpinGameFlow").AddComponent<SpinGameFlow>();
+        ItemExecuter = new GameObject("SpinItemExecuter").AddComponent<SpinItemExecuter>();
+    }
+
+    private static void FindAll()
+    {
         SpinObserver[] spinObservs = Object.FindObjectsByType<SpinObserver>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         foreach (var spin in spinObservs)
         {
-            if(spin.Tags.Contains("GamePlay"))
+            if (spin.Tags.Contains("GamePlay"))
                 spinGamePlay = spin;
         }
 
-        FortuneSpinPresenter[] fortunes = Object.FindObjectsByType<FortuneSpinPresenter>(FindObjectsInactive.Include, 
+        SpinHandle[] handles = Object.FindObjectsByType<SpinHandle>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
+        handlesFixes = new List<SpinHandle>();
+        foreach (var handle in handles)
+        {
+            if (handle.Tags.Contains("FixHandle"))
+                handlesFixes.Add(handle);
+        }
+
+        FortuneSpinPresenter[] fortunes = Object.FindObjectsByType<FortuneSpinPresenter>(FindObjectsInactive.Include,
             FindObjectsSortMode.InstanceID);
         foreach (var fortune in fortunes)
         {
@@ -91,6 +125,16 @@ public static class G
         {
             if (spinUp.Tags.Contains("VictorineAnser"))
                 VictorineAnserAnimation = spinUp;
+        }
+
+        TextTyper[] textTypers = Object.FindObjectsByType<TextTyper>(FindObjectsInactive.Include,
+            FindObjectsSortMode.InstanceID);
+        foreach (var textTyper in textTypers)
+        {
+            if (textTyper.gameObject.name == "TextTyperDevil")
+                DictorTextTyper = textTyper;
+            else if (textTyper.gameObject.name == "TextTyperV")
+                VictorinTextTyper = textTyper;
         }
     }
 }

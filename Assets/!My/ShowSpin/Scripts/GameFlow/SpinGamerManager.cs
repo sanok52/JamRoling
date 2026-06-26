@@ -1,40 +1,44 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static SpinLeaderBoardUI;
 
 public class SpinGamerManager
 {
     private Dictionary<string, SpinGamer> spinGamers = new Dictionary<string, SpinGamer>();
     private Dictionary<string, int> gamersCounts = new Dictionary<string, int>();
     private bool isGamePlay;
+    private Vector2 fastAndSlow = new Vector2(10f, 15f); //fast, slow
 
     public int CountGamers => spinGamers.Values.Where(x => !x.IsDead).Count();
     public Dictionary<string, SpinGamer> SpinGamers => spinGamers;
 
-
     public event Action<Dictionary<string, int>> OnChangeProgress;
     public event Action<string, int> OnGamerProgress;
+    public event Action<string, int> OnGamerProgressDelta;
+    public event Action<SpinGamer, bool> OnGamerBroke;
     public event Action<SpinGamer> OnGamerDead;
 
-    public void KillLast()
+    public SpinGamerManager.SpinGamer GetLast()
     {
         string minID = string.Empty;
         int minCount = int.MaxValue;
         foreach (var item in gamersCounts)
         {
             //Debug.Log($"{item.Key} {item.Value} < {minCount} ({minID})");
-            if(!spinGamers[item.Key].IsDead && item.Value < minCount)
+            if (!spinGamers[item.Key].IsDead && item.Value < minCount)
             {
                 minID = item.Key;
                 minCount = item.Value;
             }
         }
 
-        Kill(spinGamers[minID]);
+        return spinGamers[minID];
     }
 
-    private void Kill(SpinGamer spinGamer)
+    public void Kill(SpinGamer spinGamer)
     {
         spinGamer.IsDead = true;
         if(spinGamer.View != null)
@@ -60,13 +64,22 @@ public class SpinGamerManager
             new PocketRandomDataCreate<float>(1.5f, 3));
 
         int num = 111;
-        for (int i = 0; i < views.Length && i < Gamers; i++) {
+        for (int i = 0; i < views.Length; i++) {
             SpinGamerView item = views[i];
+
+            if(i >= Gamers)
+            {
+                if (item.ID != "Player")
+                    item.gameObject.SetActive(false);
+                continue;
+            }    
+
             OnGamerProgress += item.TryUpdateProgress;
 
             if (item.ID == "Player")
             {
                 spinGamers["Player"].View = item;
+                Gamers++;
                 continue;
             }
 
@@ -83,7 +96,7 @@ public class SpinGamerManager
                 View = item,
                 coefSin = UnityEngine.Random.Range(0.1f, 1f),
                 offsetSin = UnityEngine.Random.Range(0, 10f),
-                coefSpeed = UnityEngine.Random.Range(1, 5f) * PocketRandomazer.GetRandomElement<float>("EnemyHard")
+                coefSpeed = UnityEngine.Random.Range(3f, 5f) * PocketRandomazer.GetRandomElement<float>("EnemyHard")
             });
         }
         
@@ -107,6 +120,7 @@ public class SpinGamerManager
             gamersCounts[id] += count;
 
         OnGamerProgress?.Invoke(id, gamersCounts[id]);
+        OnGamerProgressDelta?.Invoke(id, count);
         OnChangeProgress?.Invoke(gamersCounts);
     }
 
@@ -126,36 +140,105 @@ public class SpinGamerManager
         this.isGamePlay = isGamePlay;
     }
 
+    float speedTimer = 0f;
+    bool isFast;
+
     public void Update()
     {
         if (!isGamePlay)
             return;
+
+        speedTimer += Time.deltaTime;
+        if(speedTimer >= (isFast ? fastAndSlow.x : fastAndSlow.y))
+        {
+            speedTimer = 0;
+            isFast = !isFast;
+        }
 
         foreach (var gamer in spinGamers.Values)
         {
             if (gamer.IsDead || gamer.ID == "Player")
                 continue;
 
+            if (gamer.IsBroke)
+            {
+                gamer.brokeWait -= Time.deltaTime;
+                if (gamer.brokeWait < 0)
+                    Broke(gamer.ID, false);
+                continue;
+            }
+
             float deltaC = 1f;
             int deltaAtPlayer = gamersCounts["Player"] - gamersCounts[gamer.ID];
             if (deltaAtPlayer < -7)
             {
                 if (deltaAtPlayer < -25)
-                    deltaC = 0.3f;
+                    deltaC = 0.25f;
                 else
                     deltaC = 0.7f;
             }
             else if (deltaAtPlayer > 10)
                 deltaC = 1.1f;
             else if (deltaAtPlayer > 20)
+                deltaC = 1.3f;
+            else if (deltaAtPlayer > 30)
                 deltaC = 1.5f;
 
             bool isFog = G.SpinGameFlow.GameMode == SpinGameFlow.SpinGameMode.Fog;
+
+            deltaC *= isFast ? 1f : 0.65f;
 
             int progress = gamer.Progress(deltaC * (isFog ? 0.1f : 1f));
             if(progress > 0)
                 GamerProgress(gamer.ID, progress * (isFog ? 20 : progress));
         }
+    }
+
+    public void BrokePlayer (bool isBroke)
+    {
+        Broke("Player", isBroke);
+    }
+
+    public void Broke (string id, bool isBroke)
+    {
+        if (spinGamers[id].IsBroke == isBroke)
+            return;
+
+        spinGamers[id].IsBroke = isBroke;
+        spinGamers[id].brokeWait = Mathf.Clamp(UnityEngine.Random.Range(9f, 15f) / spinGamers[id].coefSpeed, 9f, 18f);
+        if (isBroke)
+            spinGamers[id].View.FixAnim();
+        else
+            spinGamers[id].View.EndFix();
+
+        OnGamerBroke?.Invoke(spinGamers[id], isBroke);
+    }
+
+    public SpinGamer[] GetLeaders(int leaders)
+    {
+        List<LeaderboardData> datas = new List<LeaderboardData>();
+        Dictionary<string, SpinGamer> keyValues = new Dictionary<string, SpinGamer>();
+        foreach (var item in spinGamers)
+        {
+            int count = gamersCounts.ContainsKey(item.Key) ? gamersCounts[item.Key] : 0;
+            var data = new LeaderboardData(item.Value.Name, count, item.Value.IsDead, item.Value.IsBroke);
+            datas.Add(data);
+            keyValues.Add(data.Name, item.Value);
+        }
+
+        var sorted = datas
+            .OrderBy(d => d.IsDead)
+            .ThenByDescending(d => d.Count)
+            .ToList().Where(x => !x.IsDead).ToList();
+
+        List<SpinGamer> gamers = new List<SpinGamer>();
+        for (int i = 0; i < sorted.Count && i < leaders; i++)
+        {
+            LeaderboardData item = sorted[i];
+            gamers.Add(keyValues[item.Name]);
+        }
+
+        return gamers.ToArray();
     }
 
     [Serializable]
@@ -165,11 +248,13 @@ public class SpinGamerManager
         public string Name;
         public SpinGamerView View;
         public bool IsDead;
+        public bool IsBroke;
 
         [Space]
         public float coefSpeed = 1f;
         public float offsetSin = 0f;
         public float coefSin = 1f;
+        public float brokeWait = 5f;
 
         public float currentProgress; 
 

@@ -20,8 +20,11 @@ public class SpinMain : MonoBehaviour, ITaggable
         defaultUp = referenceTr.up;
     }
 
-    public void SetRotation(Vector3 pointTarget, Vector3 directionHandle)
+    public void SetRotation(Vector3 pointTarget, Vector3 directionHandle, bool testEnabled = true)
     {
+        if (enabled == false && testEnabled)
+            return;
+
         directionHandle = new Vector3(
             ClampFloatInVector(directionHandle.x),
              ClampFloatInVector(directionHandle.y),
@@ -42,8 +45,11 @@ public class SpinMain : MonoBehaviour, ITaggable
         AddRotation(angle);
     }
 
-    public void AddRotation (float angle)
+    public void AddRotation (float angle, bool testEnabled = true)
     {
+        if (enabled == false && testEnabled)
+            return;
+
         //Debug.Log($"angle {angle}");
         Quaternion deltaRotation = Quaternion.AngleAxis(angle, referenceTr.up);
         Quaternion targetRotation = deltaRotation * transform.rotation;

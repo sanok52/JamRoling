@@ -1,0 +1,95 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: SpinResourceData
+  m_EditorClassIdentifier: Assembly-CSharp::SpinResourceData
+  itemInfos:
+  - ID: p1
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 6766563963832127651, guid: f794100b548316c45af33741c67afd4d, type: 3}
+  - ID: p2
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 7768701670426768589, guid: a2a99a6d15445e542b5cf72796b79a28, type: 3}
+  - ID: p3
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 4336078597298515295, guid: 3c421ba68753e5e439158aa363efc7f6, type: 3}
+  - ID: p4
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: -470011918020092785, guid: 6908cf274a9e8a74ea13be64433e4729, type: 3}
+  - ID: p5
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 9142582348107090820, guid: fc064a55739a927459a807fd06dfdfa4, type: 3}
+  - ID: p6
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 8474006122282097546, guid: 3e554be492aace14c9e5ff95e5278970, type: 3}
+  - ID: p7
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: -412590876977848623, guid: 0a34325a4baa23646a64a731a2e80f2b, type: 3}
+  - ID: p8
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 5410003432586074778, guid: ab23729c1bdf9dd48975e027c9237611, type: 3}
+  - ID: p9
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: -5134197331893571035, guid: 7bdef3a964340494ea0b6a229da99153, type: 3}
+  - ID: p10
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 5284727519373377549, guid: 0e94c95ea5d0cc04d9fd59079399d7c9, type: 3}
+  - ID: p11
+    Name: 
+    Description: 
+    isVictorin: 1
+    itemBehaviour: {fileID: 4824437514537910932, guid: e47a78986ce093d4d95281611ef889f6, type: 3}
+  - ID: a1
+    Name: 
+    Description: 
+    isVictorin: 0
+    itemBehaviour: {fileID: 2916047331063999469, guid: 51a1f47cb7d9eb841814678e3e42fa4d, type: 3}
+  - ID: a2
+    Name: 
+    Description: 
+    isVictorin: 0
+    itemBehaviour: {fileID: 539981351510851264, guid: 570d6c1f44287a9449c21bd49cba55c9, type: 3}
+  - ID: a3
+    Name: 
+    Description: 
+    isVictorin: 0
+    itemBehaviour: {fileID: 5849075463596114038, guid: 89d82c5682cc6cf4a99848abca8eb426, type: 3}
+  - ID: a4
+    Name: 
+    Description: 
+    isVictorin: 0
+    itemBehaviour: {fileID: 0}
+  - ID: a5
+    Name: 
+    Description: 
+    isVictorin: 0
+    itemBehaviour: {fileID: -2498621505180209290, guid: d371f3dc3e00c4e4d8da06fab9f22e3d, type: 3}

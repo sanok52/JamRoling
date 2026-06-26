@@ -26,8 +26,8 @@ public class SpinGameFlow : MonoBehaviour
 
 
     int[] fortuneOption1 = new int[] { 0, 2 };
-    int[] fortuneOption2 = new int[] { 3, 6 };
-    int[] fortuneOption3 = new int[] { 7 };
+    int[] fortuneOption2 = new int[] { 3, 5 };
+    int[] fortuneOption3 = new int[] { 7, 6 };
     int[] fortuneOption4 = new int[] { 5 };
 
     private float delayKill = 7f;
@@ -42,10 +42,30 @@ public class SpinGameFlow : MonoBehaviour
         G.GamerManager.OnGamerDead += OnGamerDeadWork;
         G.LeaderBoardUI.OnLeadersChanged += LeadersChangedWork;
 
+        G.GamerManager.OnGamerBroke += GamerBrokeWork;
+        G.ScreenRemont.OnRemont += () => G.GamerManager.BrokePlayer(false);
+        G.GamerManager.OnGamerProgressDelta += GamerDeltaProgressWork;
+
         DictorSpeachManager.SetVariable("Player_Name", "N-451");
 
         StartCoroutine(GameFlowRoutine());
+
+        PocketRandomazer.CreatePocket<SpinGameMode>("RandomEvents", SpinGameMode.Fog, SpinGameMode.Fog, SpinGameMode.Unclock, SpinGameMode.Clock,
+            SpinGameMode.Clock, SpinGameMode.Unclock, SpinGameMode.Fog, SpinGameMode.Unclock, SpinGameMode.Clock, 
+            SpinGameMode.DevicePlayerBreak);
+
         InitFortuneWhell();
+    }
+
+    private void GamerDeltaProgressWork(string id, int progress)
+    {
+        if (id != "Player")
+            return;
+
+        if(progress < 0)
+        {
+
+        }
     }
 
     private IEnumerator GameFlowRoutine()
@@ -66,9 +86,15 @@ public class SpinGameFlow : MonoBehaviour
                 if (isWin || isDead)
                     break;
 
+                StopCoroutine("QuizWaitAnserRoutine");
+                StopCoroutine("QuizRoutine");
+                G.VictorineAnserAnimation.AnimationUp();
+                G.FortuneWhell.UpNow = true;
+                BreakMultyplay();
+
                 if (TestBooleans.GetValue("PlayQuiz"))
                 {
-                    yield return QuizRoutine(); //Викторина ("Волки засыпают")
+                    yield return QuizGameStateRoutine(); //Викторина ("Волки засыпают")
                 }
             }
         }
@@ -76,6 +102,8 @@ public class SpinGameFlow : MonoBehaviour
         StopCoroutine("RandomEventsRoutine");
         StopCoroutine("FortuneWhellRoutine");
         StopCoroutine("GamerUpdateRoutine");
+        StopCoroutine("QuizWaitAnserRoutine");
+        StopCoroutine("QuizRoutine");
 
         if (isWin || TestBooleans.GetValue("IsWin"))
             yield return WinRoutine(); //Игрок победил
@@ -112,6 +140,11 @@ public class SpinGameFlow : MonoBehaviour
     private IEnumerator GameRoutine()
     {
         isGamePlay = true;
+        G.FortuneWhell.UpNow = false;
+        G.handlesFixes.ForEach(x => x.enabled = true);
+
+        G.ItemExecuter.AddItemInList("a2");
+
         SetGameMode(SpinGameMode.None, true);
 
         StartCoroutine(RandomEventsRoutine());
@@ -123,9 +156,7 @@ public class SpinGameFlow : MonoBehaviour
 
         float waitKill = delayKill;
         int killAtRound = this.killAtRound[round];
-
-        if (G.GamerManager.CountGamers == 2)
-            waitKill = killAtRound * delayKill;
+;
 
         G.GamerManager.SetPlayState(true);
         
@@ -137,25 +168,44 @@ public class SpinGameFlow : MonoBehaviour
         }
 
         int targetCount = G.GamerManager.CountGamers - killAtRound;
-        while (G.GamerManager.CountGamers > 1 && G.GamerManager.CountGamers > targetCount)
+        if (G.GamerManager.CountGamers == 2)
+        {
+            waitKill = killAtRound * delayKill;
+            targetCount = 1;
+        }
+
+        while (G.GamerManager.CountGamers > 1 && G.GamerManager.CountGamers > targetCount && !IsSkipGamePlay)
         {
             yield return new WaitForSeconds(waitKill);
-            KillLast();
+
+            var gamer = G.GamerManager.GetLast();
+            if (gamer.ID == "Player")
+            {
+                yield return new WaitForSeconds(12f / (round + 1));
+                gamer = G.GamerManager.GetLast();
+            }
+
+            G.GamerManager.Kill(gamer);
+
             Debug.Log($"{round}: {G.GamerManager.CountGamers}/{targetCount}");
 
             if (isDead)
                 yield break;
         }
+        IsSkipGamePlay = false;
 
         G.GamerManager.SetPlayState(false);
-
-        if (G.GamerManager.CountGamers == 1)
-            SetWin();
 
         isGamePlay = false;
 
         G.MusicManager.StopMusic();
         SetGameMode(SpinGameMode.None, true);
+
+        if (G.GamerManager.CountGamers == 1)
+        {
+            SetWin();
+            yield break;
+        }
 
         foreach (var gamer in G.GamerManager.SpinGamers.Values)
         {
@@ -164,6 +214,7 @@ public class SpinGameFlow : MonoBehaviour
             gamer.View.IdleAnim();
         }
 
+        G.handlesFixes.ForEach(x => x.enabled = false);
         yield return SpeakIDRoutine("Dogs_Sleep");
 
         round++;
@@ -174,14 +225,25 @@ public class SpinGameFlow : MonoBehaviour
         isWin = true;
     }
 
-    private void KillLast()
+    private IEnumerator QuizGameStateRoutine()
     {
-        G.GamerManager.KillLast();
+        SetGameMode(SpinGameMode.None, true);
+        isGamePlay = false;
+
+        foreach (var gamer in G.GamerManager.SpinGamers.Values)
+        {
+            if (gamer.IsDead || gamer.ID == "Player")
+                continue;
+
+            G.GamerManager.Broke(gamer.ID, false);
+        }
+
+        yield return QuizRoutine();
     }
 
-    private IEnumerator QuizRoutine()
+    private IEnumerator QuizRoutine(float wait = -1)
     {
-        isGamePlay = false;
+        isFortune = true;
 
         int[] hard = new int[] { 0, 2 };
         int[] middle = new int[] { 3, 4, 6 };
@@ -201,8 +263,7 @@ public class SpinGameFlow : MonoBehaviour
         }
 
         G.VictorinChoiceContent.SetChoices(choices.ToArray());
-
-        G.VictorinChoiceWhell.Restart();
+        G.VictorinChoiceWhell.Restart(isGamePlay);
 
         bool isWait = true;
         Action action = () => isWait = false;
@@ -225,14 +286,13 @@ public class SpinGameFlow : MonoBehaviour
         else
             quiz = DictorSpeachManager.GetRandomVictorin("Easy");
 
-        yield return QuizWaitAnserRoutine(quiz);
+        yield return QuizWaitAnserRoutine(quiz, isHard ? 2 : (isMiddle ? 1 : 0), wait);
 
+        isFortune = false;
     }
 
-    private IEnumerator QuizWaitAnserRoutine(SpinVictorinQuest quiz)
+    private IEnumerator QuizWaitAnserRoutine(SpinVictorinQuest quiz, int hardQ, float wait = -1)
     {
-        ///Анимация появления колеса с выбором
-
         List<ChoicesInChoiceContent> choices = new List<ChoicesInChoiceContent>();
         choices.Add(new ChoicesInChoiceContent(0, "I don't know", Color.gray));
 
@@ -251,35 +311,76 @@ public class SpinGameFlow : MonoBehaviour
                 wrong.RemoveAt(n);
             }
         }
-        G.VictorineAnserContent.SetChoices(choices.ToArray());       
+        G.VictorineAnserContent.SetChoices(choices.ToArray());
 
-        StartCoroutine(SpeakWork(quiz.GetText(DictorSpeachManager.language), "Empty"));
+        //StartCoroutine(SpeakWork("", "Empty"));
         G.VictorineAnserAnimation.gameObject.SetActive(true);
         G.VictorineAnserAnimation.AnimationDown();
 
-        yield return new WaitForSeconds(15f);
-        //yield return new WaitForSeconds(2000f);
+        yield return G.ScreenVictorin.StartQuiz(quiz, wait);
 
         int index = G.VictorineAnserContent.GetCurrentChoiceIndex();
 
-        if(right == index) 
+        if (right == index)
         {
-            Debug.Log("И это правильный ответ!");
+            G.ScreenVictorin.SetQuizText("That's the right answer!");
+            G.ItemExecuter.InvokeEvent(BehActionType.QuizRight, quiz, hardQ);
         }
         else
         {
-            Debug.Log("И это НЕправильный ответ!");
+            G.ScreenVictorin.SetQuizText("This is the wrong answer!");
+            G.ItemExecuter.InvokeEvent(BehActionType.QuizWrong, quiz, hardQ);
         }
-        yield return new WaitForSeconds(1f);
+
+        if (right == index)
+        {
+            if (isGamePlay)
+            {
+                yield return new WaitForSeconds(1f);
+
+                int point = (int)(100 * (1f + (0.2f * hardQ))) + quizCorrectBonus;
+                G.ScreenVictorin.SetQuizText($"You get {point} points!");
+                G.GamerManager.PlayerProgress(point);
+
+                yield return new WaitForSeconds(3f);
+            }
+            else
+            {
+                yield return new WaitForSeconds(2f);
+
+                var itemInfo = G.ItemExecuter.GetRandomVictorinItem();
+                var itemInfoPure = G.ItemExecuter.GetPureInfo(itemInfo);
+                G.ItemExecuter.AddItemInList(itemInfo.ID);
+
+                int point = (int)(20 * (1f + (0.2f * hardQ))) + quizCorrectBonus;
+                G.GamerManager.PlayerProgress(point);
+
+                yield return G.ScreenVictorin.SetGetItemObject(itemInfoPure);
+            }
+        }
+        else
+        {
+            if (isGamePlay)
+                yield return new WaitForSeconds(2f);
+            else
+                yield return new WaitForSeconds(3f);
+        }
+
+        yield return new WaitForSeconds(0.5f);
 
         G.VictorineAnserAnimation.AnimationUp();
-        yield return new WaitForSeconds(1f);
+        if (!isGamePlay)
+            yield return new WaitForSeconds(1f);
     }
 
     public enum SpinGameMode { None, Clock, Unclock, Fog,
         DevicePlayerBreak
     }
     public SpinGameMode GameMode { get; private set; }
+    public bool IsGamePlay { get => isGamePlay; set => isGamePlay = value; }
+    public bool IsSkipGamePlay { get; private set; }
+
+    [HideInInspector] public bool replaceRotateFortune;
 
     private IEnumerator RandomEventsRoutine()
     {
@@ -294,41 +395,98 @@ public class SpinGameFlow : MonoBehaviour
         }
     }
 
+    private bool isFortune = false;
     private IEnumerator FortuneWhellRoutine()
     {
         int killAtRound = this.killAtRound[round];
         yield return new WaitForSeconds(UnityEngine.Random.Range(delayKill, (delayKill * killAtRound) * 0.8f));
+        yield return FortuneWhellImmidiatlyRoutine();
+    }
+
+    public void FortuneWhellImmidiatly()
+    {
+        if (isFortune)
+            return;
+        
+        if(replaceRotateFortune && (GameMode == SpinGameMode.Clock || GameMode == SpinGameMode.Unclock))
+        {
+            StartCoroutine(QuizRoutine(15));
+        }else
+            StartCoroutine(FortuneWhellImmidiatlyRoutine());
+    }
+
+    private IEnumerator FortuneWhellImmidiatlyRoutine()
+    {
+        if (isFortune)
+            yield break;
+
+        isFortune = true;
         PlayerFortuneWhell();
 
         bool isWait = true;
+        bool noChoice = false;
+
         Action action = () => isWait = false;
         G.FortuneWhell.OnEndSpin += action;
 
-        yield return new WaitWhile(() => isWait); //Ждём, что игрок сделает выбор на колесе
+        Action actionNoChoice = () => noChoice = true;
+        G.FortuneWhell.OnNoChoice += actionNoChoice;
+
+        yield return new WaitWhile(() => isWait && !noChoice); //Ждём, что игрок сделает выбор на колесе
 
         G.FortuneWhell.OnEndSpin -= action;
 
-        int index = G.FortuneContent.GetCurrentChoiceIndex();
-
-        if (fortuneOption1.Contains(index))
+        if (noChoice)
         {
-            Debug.Log("FortuneOption 1");
-        }
-        else if (fortuneOption2.Contains(index))
-        {
-            Debug.Log("FortuneOption 2");
-        }
-        else if (fortuneOption3.Contains(index))
-        {
-            Debug.Log("FortuneOption 3");
-        }
-        else if (fortuneOption4.Contains(index))
-        {
-            Debug.Log("FortuneOption 4");
+            G.ItemExecuter.InvokeEvent(BehActionType.FortuneWhellMiss);
         }
         else
         {
-            Debug.Log("FortuneOption Empty");
+            int index = G.FortuneContent.GetCurrentChoiceIndex();
+            ExecuteFortuneWhellOption(index);
+        }
+
+        isFortune = false;
+        G.ItemExecuter.InvokeEvent(BehActionType.FortuneWhellEnd);
+
+        if(delayFortune > 0)
+        {
+            if (!isGamePlay)
+            {
+                delayFortune = 0;
+                yield break;
+            }
+
+            delayFortune--;
+            FortuneWhellImmidiatly();
+        }
+    }
+
+    private void ExecuteFortuneWhellOption(int index)
+    {
+        if (fortuneOption1.Contains(index))
+        {
+            G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[0].ID);
+            Debug.Log($"{G.ItemExecuter.FortuneItems[0].ID} option");
+        }
+        else if (fortuneOption2.Contains(index))
+        {
+            G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[1].ID);
+            Debug.Log($"{G.ItemExecuter.FortuneItems[1].ID} option");
+        }
+        else if (fortuneOption3.Contains(index))
+        {
+            G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[2].ID);
+            Debug.Log($"{G.ItemExecuter.FortuneItems[2].ID} option");
+        }
+        else if (fortuneOption4.Contains(index))
+        {
+            G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[4].ID);
+            Debug.Log($"{G.ItemExecuter.FortuneItems[4].ID} option");
+        }
+        else
+        {
+            G.ItemExecuter.InvokeEvent(BehActionType.FortuneWhellOptionEmpty);
         }
     }
 
@@ -355,6 +513,7 @@ public class SpinGameFlow : MonoBehaviour
     {
         G.FortuneWhell.Restart();
         StartCoroutine(SpeakIDRoutine("Fortune_Wheel"));
+        G.ItemExecuter.InvokeEvent(BehActionType.FortuneWhellInvoke);
     }
 
     private bool PlayerSpinIsWork()
@@ -367,8 +526,17 @@ public class SpinGameFlow : MonoBehaviour
         G.MusicManager.StopMusic();
 
         var list = DictorSpeachManager.Speeches["Final_Win_Speech"];
-        foreach (var item in list)
+        for (int i = 0; i < list.Count - 3; i++)
+        {
+            SpinDictorSpeech item = list[i];
             yield return Speak(item.GetText(DictorSpeachManager.language), item.AnimID);
+        }
+
+        GameObject.FindFirstObjectByType<LightAnim>(FindObjectsInactive.Include).gameObject.SetActive(true);
+
+        yield return Speak(list[list.Count - 3].GetText(DictorSpeachManager.language), list[list.Count - 3].AnimID);
+        yield return Speak(list[list.Count - 2].GetText(DictorSpeachManager.language), list[list.Count - 2].AnimID);
+        yield return Speak(list[list.Count - 1].GetText(DictorSpeachManager.language), list[list.Count - 1].AnimID);
 
         yield break;
         //Катсцена
@@ -406,15 +574,16 @@ public class SpinGameFlow : MonoBehaviour
 
     private void RandomGameEventInvoke()
     {
-        SetGameMode(Utils.GetRandomEnumValue(GameMode), false);
+        SetGameMode(PocketRandomazer.GetRandomElement<SpinGameMode>("RandomEvents"), false);
     }
 
-    private void SetGameMode(SpinGameMode spinMode, bool withoutDictor)
+    public void SetGameMode(SpinGameMode spinMode, bool withoutDictor)
     {
-        if (spinMode == SpinGameMode.DevicePlayerBreak)
+        if (!isGamePlay)
             return;
 
-        var prevMode = GameMode;        
+        var prevMode = GameMode;
+        prevGameModeTime = Time.time;
 
         if (playerDeltaObesrv > 0f && spinMode == SpinGameMode.Unclock)
             spinMode = SpinGameMode.Clock;
@@ -424,7 +593,6 @@ public class SpinGameFlow : MonoBehaviour
 
         GameMode = spinMode;
         G.GameModeUI.SetMode(spinMode);
-
 
         Vector2 speedAnim =  new Vector2(0, 0);
         List<string> triggerAnim = new List<string>() { };
@@ -492,8 +660,8 @@ public class SpinGameFlow : MonoBehaviour
                 break;
 
             case SpinGameMode.DevicePlayerBreak:
-                if (!withoutDictor)
-                    StartCoroutine(SpeakIDRoutine("Device_Broken"));
+                G.GamerManager.BrokePlayer(true);
+
                 break;
 
             default:
@@ -517,6 +685,9 @@ public class SpinGameFlow : MonoBehaviour
     float deltaSumQuater = 0f;
     private void OnSpinWork(SpinEventInfo info)
     {
+        if (G.GamerManager.SpinGamers["Player"].IsBroke)
+            return;
+
         float delta = info.delta;
 
         if (Mathf.Sign(deltaSumQuater) != Mathf.Sign(delta))
@@ -534,7 +705,7 @@ public class SpinGameFlow : MonoBehaviour
 
         if (GameMode == SpinGameMode.Fog && Mathf.Abs(delta) >= 8f)
         {
-            Shtraf(0.15f);
+            Shtraf(0.18f);
             return;
         }
 
@@ -548,13 +719,27 @@ public class SpinGameFlow : MonoBehaviour
     }
 
     private float prevShtraf = 0f;
+    private float prevGameModeTime = 0f;
     private void Shtraf(float coef)
     {
-        if(Time.time - prevShtraf < 1f)
+        if(Time.time - prevShtraf < 1f || Time.time - prevGameModeTime < 0.8f)
             return;
 
-        G.GamerManager.PlayerProgress(-(int)(50 * coef));
-        G.GamerManager.SpinGamers["Player"].View.Shtraf();
+        if (ignorePenalty > 0)
+        {
+            ignorePenalty--;
+            G.GamerManager.PlayerProgress(15);
+            G.GamerManager.SpinGamers["Player"].View.Shtraf(Color.white);
+            return;
+        }
+
+        if (Time.time - prevGameModeTime > 1.6f)
+        {
+            G.GamerManager.PlayerProgress(-(int)(50 * coef));
+            G.GamerManager.SpinGamers["Player"].View.Shtraf();
+        }
+        G.ItemExecuter.InvokeEvent(BehActionType.Penalty);
+
         prevShtraf = Time.time;
     }
 
@@ -602,14 +787,16 @@ public class SpinGameFlow : MonoBehaviour
         switch (r4)
         {
             case SpinRotateEventType.R4:
-                if(GameMode == SpinGameMode.Fog && Time.time - prevShtraf > 1.5f)
-                    G.GamerManager.PlayerProgress(25);
+                if (GameMode == SpinGameMode.Fog && Time.time - prevShtraf > 1.5f)
+                {
+                    G.GamerManager.PlayerProgress((int)(20 * fogMultyply) + (int)(multyplySup > 1 ? MathF.Pow(2, multyplySup) : 0));
+                }
                 break;
             case SpinRotateEventType.R2:
                 break;
             case SpinRotateEventType.R1:
                 if (equalGameMode)
-                    G.GamerManager.PlayerProgress(1);
+                    G.GamerManager.PlayerProgress((int)(1 + (multyplySup > 1 ? MathF.Pow(1.35f, multyplySup) : 0f)));
                 else
                     Shtraf(0.3f);
                 break;
@@ -627,33 +814,35 @@ public class SpinGameFlow : MonoBehaviour
         {
             if (fortuneOption1.Contains(i))
             {
-                choices.Add(new ChoicesInChoiceContent(i, "option1",
+                choices.Add(new ChoicesInChoiceContent(i, G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[0]).Name,
                      Color.red));
             } else if (fortuneOption2.Contains(i))
             {
-                choices.Add(new ChoicesInChoiceContent(i, "option2",
+                choices.Add(new ChoicesInChoiceContent(i, G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[1]).Name,
                      Color.yellow));
             }
             else if (fortuneOption3.Contains(i))
             {
-                choices.Add(new ChoicesInChoiceContent(i, "option3",
+                choices.Add(new ChoicesInChoiceContent(i, G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[2]).Name,
                      Color.blue));
             }
             else if (fortuneOption4.Contains(i))
             {
-                choices.Add(new ChoicesInChoiceContent(i, "option4",
+                choices.Add(new ChoicesInChoiceContent(i, G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[4]).Name,
                      Color.purple));
             }else
             {
                 choices.Add(new ChoicesInChoiceContent(i, "",
                      Color.gray));
-            }    
+            }
         }
 
         G.FortuneContent.SetChoices(choices.ToArray());
     }
 
     float lastTimeSpeach = 0f;
+    public int fixBonus = 45;
+
     private void OnGamerDeadWork(SpinGamerManager.SpinGamer gamer)
     {
         DictorSpeachManager.SetVariable("Last_Kill_Name", gamer.Name);
@@ -665,6 +854,8 @@ public class SpinGameFlow : MonoBehaviour
 
         if (UnityEngine.Random.Range(0, 100f) > 80f && Time.time - lastTimeSpeach  > 2f)
             StartCoroutine(SpeakIDRoutine("Someone_Killed"));
+
+        G.ItemExecuter.InvokeEvent(BehActionType.GamerDead, gamer);
     }
 
     private void PlayerDead()
@@ -678,6 +869,95 @@ public class SpinGameFlow : MonoBehaviour
         DictorSpeachManager.SetVariable("Leader_Name", name);
         if (Time.time - lastTimeSpeach > 12f)
             StartCoroutine(SpeakIDRoutine("New_Leader"));
+    }
+
+    private void GamerBrokeWork(SpinGamerManager.SpinGamer gamer, bool isBroke)
+    {
+        if (!isGamePlay)
+            return;
+
+        DictorSpeachManager.SetVariable("Broke_Player", gamer.Name);
+        DictorSpeachManager.SetVariable("Fix_Player", gamer.Name);
+
+        if (gamer.ID == "Player")
+        {
+            if (isBroke)
+            {
+                StartCoroutine(SpeakIDRoutine("Device_Broken"));
+                G.ItemExecuter.InvokeEvent(BehActionType.PlayerBroke);
+            }
+            else
+            {
+                StartCoroutine(SpeakIDRoutine("Device_Fixed"));
+                G.GamerManager.PlayerProgress(fixBonus);
+            }
+            return;
+        }
+
+        //StartCoroutine(FixDevice(gamer));
+        if (UnityEngine.Random.Range(0, 100) > 75 || Time.time - lastTimeSpeach > 12f)
+        {
+            if (isBroke)
+            {
+                StartCoroutine(SpeakIDRoutine("Device_Broken"));
+            }
+            else
+                StartCoroutine(SpeakIDRoutine("Device_Fixed"));
+        }
+    }
+
+    float fogMultyply = 1f;
+    [HideInInspector] public int countNoPenalty;
+    public int delayFortune;
+    public int quizCorrectBonus;
+    private int multyplySup = 1;
+    [HideInInspector] public int ignorePenalty;
+
+    public void SetFogMultyply(float coef = 1f)
+    {
+        fogMultyply = 1f;
+    }
+
+    public void BreakMultyplay()
+    {
+        StopCoroutine("AddSuperMultyplyRoutine");
+        multyplySup = 1;
+        G.GamerManager.SpinGamers["Player"].View.TryUpdateMulty(multyplySup);
+    }
+
+    public void AddSuperMultyply()
+    {
+        StartCoroutine(AddSuperMultyplyRoutine());
+    }
+
+    private IEnumerator AddSuperMultyplyRoutine()
+    {
+        multyplySup++;
+        G.GamerManager.SpinGamers["Player"].View.TryUpdateMulty(multyplySup);
+        yield return new WaitForSeconds(40f);
+        //multyplySup--;
+        G.GamerManager.SpinGamers["Player"].View.TryUpdateMulty(multyplySup);
+    }
+
+    private void Update()
+    {
+#if UNITY_EDITOR
+        if (Input.GetKeyUp(KeyCode.R))
+            SetGameMode(SpinGameMode.Clock, false);
+
+        if (Input.GetKeyUp(KeyCode.T))
+            SetGameMode(SpinGameMode.Fog, false);
+
+        if (Input.GetKeyUp(KeyCode.C))
+            FortuneWhellImmidiatly();
+
+        if (Input.GetKeyUp(KeyCode.Q))
+            G.GamerManager.PlayerProgress(1000);
+
+        if (Input.GetKeyUp(KeyCode.Space))
+            IsSkipGamePlay = !IsSkipGamePlay;
+#endif
+
     }
 }
 

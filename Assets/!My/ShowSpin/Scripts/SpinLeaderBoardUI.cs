@@ -21,7 +21,7 @@ public class SpinLeaderBoardUI : MonoBehaviour
         foreach (var item in G.GamerManager.SpinGamers)
         {
             int count = dictionary.ContainsKey(item.Key) ? dictionary[item.Key] : 0;
-            datas.Add(new LeaderboardData(item.Value.Name, count, item.Value.IsDead));
+            datas.Add(new LeaderboardData(item.Value.Name, count, item.Value.IsDead, item.Value.IsBroke));
         }
 
         var sorted = datas
@@ -62,7 +62,8 @@ public class SpinLeaderBoardUI : MonoBehaviour
     private static void WriteTextAtWall(TMP_Text currentWall, int i, LeaderboardData data)
     {
         string text = $"{i + 1}. {data.Count} - {data.Name}";
-        currentWall.text += data.IsDead ? $"<color=orange>{text}[Dead]</color>\n" : (text + "\n");        
+        currentWall.text += data.IsDead ? $"<color=orange>{text}[Dead]</color>\n" : 
+            (data.IsBroke ? $"<color=grey>{text}[Broke]</color>\n" : (text + "\n"));        
     }
 
     public struct LeaderboardData
@@ -70,12 +71,14 @@ public class SpinLeaderBoardUI : MonoBehaviour
         public string Name;
         public int Count;
         public bool IsDead;
+        public bool IsBroke;
 
-        public LeaderboardData(string name, int count, bool isDead)
+        public LeaderboardData(string name, int count, bool isDead, bool isBroke)
         {
             Name = name;
             Count = count;
             IsDead = isDead;
+            IsBroke = isBroke;
         }
     }
 }

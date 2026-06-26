@@ -33,4 +33,11 @@ public class ChoiceElementGO : MonoBehaviour
     {
         sprRenSelect.color = isChoice ? color : new Color(color.r * 0.35f, color.g * 0.35f, color.b * 0.35f, 1f);
     }
+
+    public void SetMirror(bool isMirror)
+    {
+        tmp.transform.localScale = new Vector3(tmp.transform.localScale.x * (isMirror ? -1 : 1),
+            tmp.transform.localScale.y * (isMirror ? -1 : 1),
+            tmp.transform.localScale.z);
+    }
 }

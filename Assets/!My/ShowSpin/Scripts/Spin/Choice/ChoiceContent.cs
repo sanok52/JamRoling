@@ -11,6 +11,9 @@ public class ChoiceContent : MonoBehaviour, ITaggable
     [SerializeField] private float angleTarget = 45f;
     [SerializeField] private float angleCoef = 1f;
 
+    [Space]
+    [SerializeField] private bool isMirror;
+
     private Dictionary<ChoicesInChoiceContent, ChoiceElementGO> elementGOs = new Dictionary<ChoicesInChoiceContent, ChoiceElementGO>();
 
     [SerializeField] private List<string> tags;
@@ -59,6 +62,7 @@ public class ChoiceContent : MonoBehaviour, ITaggable
         var nchoice = Instantiate(elementGOPref, content.transform.position, Quaternion.identity, content);
         elementGOs.Add(choice, nchoice);
         nchoice.SetChoice(choice);
+        nchoice.SetMirror(isMirror);
     }
 
     private void UpdateChoicesView()

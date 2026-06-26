@@ -16,7 +16,7 @@ public class SpinHandle : SpinInterMoveble, ITaggable
 
     [Space]
     [SerializeField] private List<string> tags = new List<string>();
-    List<string> ITaggable.Tags => tags;
+    public List<string> Tags => tags;
 
     private void Start()
     {

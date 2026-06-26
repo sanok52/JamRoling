@@ -12,7 +12,16 @@ public static class DictorSpeachManager
     public const string fileSpeechName = "SpinText";
     public const string fileVictorinName = "SpinText2";
 
-    public static Language language = Language.RU;
+    public static Language language
+    {
+        get
+        {
+#if UNITY_EDITOR
+            return Language.RU;
+#endif
+            return Language.EN;
+        }
+    }
 
     private static Dictionary<string, string> Varibles = new Dictionary<string, string>()
     {
