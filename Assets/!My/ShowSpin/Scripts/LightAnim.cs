@@ -8,6 +8,9 @@ public class LightAnim : MonoBehaviour
 {
     [SerializeField] private Animator animator;
     [SerializeField] private Transform trUp;
+    public bool IsEnd { get; private set; }
+
+    public event Action OnEnd;
 
     private void Start()
     {
@@ -28,5 +31,8 @@ public class LightAnim : MonoBehaviour
 
         yield return canvasGroup.DOFade(1f, 4f).WaitForCompletion();
         yield return image.DOColor(Color.black, 2f).WaitForCompletion();
+
+        OnEnd?.Invoke();
+        IsEnd = true;
     }
 }

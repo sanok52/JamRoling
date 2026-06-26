@@ -43,7 +43,9 @@ public class SpinHandle : SpinInterMoveble, ITaggable
                 continue;
             }
 
-            Vector3 offsetVector = new Vector3(Input.GetAxis("Mouse X"), 0, Input.GetAxis("Mouse Y")) * speedOffset * Time.fixedDeltaTime;
+            Vector3 offsetVector = new Vector3(Input.GetAxis("Mouse X") * (MenuManager.Snsitivity + 0.1f), 0, 
+                Input.GetAxis("Mouse Y") * (MenuManager.Snsitivity + 0.1f))
+                * speedOffset * Time.fixedDeltaTime;
 
             if (coefRadius <= 1f)
                 pointTarget = Vector3.Lerp(spinMain.transform.position, pointTarget, coefRadius);

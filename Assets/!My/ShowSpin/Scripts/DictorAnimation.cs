@@ -20,7 +20,7 @@ public class DictorAnimation : MonoBehaviour
 
     private void Start()
     {
-        SetAnimation("Empty");
+        SetAnimation("You");
         StartCoroutine(UpdateAnimation());
     }
 

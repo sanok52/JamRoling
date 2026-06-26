@@ -8,12 +8,13 @@ using static SpinLeaderBoardUI;
 public class SpinGamerManager
 {
     private Dictionary<string, SpinGamer> spinGamers = new Dictionary<string, SpinGamer>();
-    private Dictionary<string, int> gamersCounts = new Dictionary<string, int>();
+    private Dictionary<string, int> gamersScores = new Dictionary<string, int>();
     private bool isGamePlay;
     private Vector2 fastAndSlow = new Vector2(10f, 15f); //fast, slow
 
     public int CountGamers => spinGamers.Values.Where(x => !x.IsDead).Count();
     public Dictionary<string, SpinGamer> SpinGamers => spinGamers;
+    public Dictionary<string, int> GamersScores => gamersScores;
 
     public event Action<Dictionary<string, int>> OnChangeProgress;
     public event Action<string, int> OnGamerProgress;
@@ -25,7 +26,7 @@ public class SpinGamerManager
     {
         string minID = string.Empty;
         int minCount = int.MaxValue;
-        foreach (var item in gamersCounts)
+        foreach (var item in gamersScores)
         {
             //Debug.Log($"{item.Key} {item.Value} < {minCount} ({minID})");
             if (!spinGamers[item.Key].IsDead && item.Value < minCount)
@@ -54,7 +55,7 @@ public class SpinGamerManager
             Name = "N-451",
             View = null
         });
-        gamersCounts.Add("Player", 0);
+        gamersScores.Add("Player", 0);
 
         var views = UnityEngine.Object.FindObjectsByType<SpinGamerView>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
@@ -83,7 +84,7 @@ public class SpinGamerManager
                 continue;
             }
 
-            gamersCounts.Add(item.ID, 0);
+            gamersScores.Add(item.ID, 0);
             num += UnityEngine.Random.Range(1, 10);
             if (num == 451)
                 num++;
@@ -114,25 +115,25 @@ public class SpinGamerManager
 
     public void GamerProgress(string id, int count)
     {
-        if(gamersCounts.ContainsKey(id) == false)
-            gamersCounts.Add(id, count);
+        if(gamersScores.ContainsKey(id) == false)
+            gamersScores.Add(id, count);
         else
-            gamersCounts[id] += count;
+            gamersScores[id] += count;
 
-        OnGamerProgress?.Invoke(id, gamersCounts[id]);
+        OnGamerProgress?.Invoke(id, gamersScores[id]);
         OnGamerProgressDelta?.Invoke(id, count);
-        OnChangeProgress?.Invoke(gamersCounts);
+        OnChangeProgress?.Invoke(gamersScores);
     }
 
     public void ClearAllProgress()
     {
-        foreach (var item in gamersCounts)
+        foreach (var item in gamersScores)
         {
-            gamersCounts[item.Key] = 0;
+            gamersScores[item.Key] = 0;
             OnGamerProgress?.Invoke(item.Key, 0);
         }
         
-        OnChangeProgress?.Invoke(gamersCounts);
+        OnChangeProgress?.Invoke(gamersScores);
     }
 
     public void SetPlayState(bool isGamePlay)
@@ -169,7 +170,7 @@ public class SpinGamerManager
             }
 
             float deltaC = 1f;
-            int deltaAtPlayer = gamersCounts["Player"] - gamersCounts[gamer.ID];
+            int deltaAtPlayer = gamersScores["Player"] - gamersScores[gamer.ID];
             if (deltaAtPlayer < -7)
             {
                 if (deltaAtPlayer < -25)
@@ -220,7 +221,7 @@ public class SpinGamerManager
         Dictionary<string, SpinGamer> keyValues = new Dictionary<string, SpinGamer>();
         foreach (var item in spinGamers)
         {
-            int count = gamersCounts.ContainsKey(item.Key) ? gamersCounts[item.Key] : 0;
+            int count = gamersScores.ContainsKey(item.Key) ? gamersScores[item.Key] : 0;
             var data = new LeaderboardData(item.Value.Name, count, item.Value.IsDead, item.Value.IsBroke);
             datas.Add(data);
             keyValues.Add(data.Name, item.Value);

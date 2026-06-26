@@ -1,6 +1,7 @@
 public class AIgnorePenalty: SpinItemBehaviour
 {
     public int count = 4;
+    public override string GetTextValue => count.ToString();
 
     public override void ExecuteItem(SpinItemBehContext context)
     {

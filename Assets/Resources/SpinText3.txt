@@ -1,17 +1,17 @@
 ID	NameRU	NameEN	InfoRU	InfoEN
-p1	Предмет	Penalty Break Leaders	При штрафе вероятность [Value]%, что [Value2] лидеров получат поломку	On penalty, [Value]% chance that [Value2] leaders get broken.
-p2	Предмет	Fortune On Break	С вероятностью [Value]% вызывает Колесо Фортуны при поломке устройства.	[Value]% chance to trigger Wheel of Fortune when device breaks.
-p3	Предмет	Fortune Broken Bonus	Если устройство игрока сломано, получать +[Value] очков за неиспользованное Колесо Фортуны	Wheel of Fortune disappearance gives +[Value] points if your device is broken.
-p4	Предмет	Fortune Empty Fog	Колесо Фортуны при получении пустого значения автоматически вызывает Туман.	If Wheel of Fortune gives empty result, automatically triggers Fog.
-p5	Предмет	Streak Fog Bonus	Каждое кручение без штрафа подряд увеличивает бонус от Тумана. Эффект суммируется.	Each consecutive spin without penalty increases Fog bonus. Stacks.
-p6	Предмет	Fortune Fog Double	Если Колесо Фортуны появилось при Тумане, [Value]% вероятности, что оно возникнет второй раз сразу же.	If Wheel of Fortune appears during Fog, [Value]% chance to appear again immediately.
-p7	Предмет	Fortune Quiz Replace	Если Колесо Фортуны вызвано во время смены направления, оно заменяется викториной.	If Wheel of Fortune is triggered during direction change, it is replaced by a quiz.
-p8	Предмет	Quiz Correct Bonus	Любой правильный ответ на викторине даёт +[Value] очков.	Any correct quiz answer gives +[Value] points.
-p9	Предмет	Quiz Wrong Break All	Неправильный ответ на лёгкий вопрос ломает все устройства в игре.	Wrong answer on Easy question breaks all devices.
-p10	Предмет	Death Range Multiplier	Вы получаете множитель очков каждый раз, когда умирает игрок на расстоянии [Value] мест от вас или меньше. Множитель сохраняется до конца раунда.	You gain a score multiplier each time a player within [Value] ranks dies. Multiplier lasts until round end.
-p11	Предмет	Fortune Fix	Исчезнувшее или использванное колесо фортуны с вероятностью [Value]% починит ваше устройство, если вы один из [Value2] лидеров	Исчезнувшее или использванное колесо фортуны с вероятностью [Value]% починит ваше устройство, если вы один из [Value2] лидеров
-a1	Предмет	Break Ahead	Сломать устройства [Value] игроков перед собой.	Break devices of [Value] players ahead of you.
-a2	Предмет	Break Behind	Сломать устройства [Value] игроков за собой.	Break devices of [Value] players behind you.
-a3	Предмет	Bonus Points	Получить бонус в [Value] очков.	Gain +[Value] points.
-a4	Предмет	Deferred Multiplier	Не получать очки до [Value] следующих смертей. Затем получить x[Value] от накрученных очков.	Earn no points until [Value] next deaths. Then gain x[Value] of the points accumulated in that period.
-a5	Предмет	Ignore Penalty	Игнорировать следующий штраф и вместо этого получить за него очки. Эффект суммируется.	Ignore next penalty and gain points instead. Stacks.
+p1	Зависть	Envy	При штрафе вероятность [Value]%, что [Value2] лидера получат поломку	On penalty, [Value]% chance that [Value2] leaders get broken.
+p2	Молитва	Prayer	С вероятностью [Value]% поломка устройства вызывает Колесо Фортуны	[Value]% chance to trigger Wheel of Fortune when device breaks.
+p3	Жадность	Greed	Когда устройство игрока сломано, получать +[Value] очков за неиспользованное Колесо Фортуны	Wheel of Fortune disappearance gives +[Value] points if your device is broken.
+p4	Похоть	Lust	Колесо Фортуны при неудаче автоматически вызывает Туман.	If Wheel of Fortune gives empty result, automatically triggers Fog.
+p5	Уныние	Despondency	Каждое кручение при тумане увеличивает бонус. Эффект сбрасывается при штрафе.	Each spin during Fog increases bonus. Resets on penalty.
+p6	Чревоугодие	Gluttony	Если Колесо Фортуны появилось при Тумане, [Value]% вероятности, что оно возникнет второй раз сразу же.	If Wheel of Fortune appears during Fog, [Value]% chance to appear again immediately.
+p7	Ложь	Lie	Если Колесо Фортуны вызвано во время смены направления, оно заменяется викториной.	If Wheel of Fortune is triggered during direction change, it is replaced by a quiz.
+p8	Гордыня	Pride	Любой правильный ответ даёт на [Value] очков больше.	Any correct quiz answer gives +[Value] points.
+p9	Гнев	Anger	Неправильный ответ на лёгкий или средний вопрос ломает все устройства в игре.	Wrong answer on Easy or Medium question breaks all devices.
+p10	Жестокость	Cruelty	Вы получаете множитель очков каждый раз, когда рядом умирает игрок.	You gain a score multiplier each time a player dies nearby.
+p11	Лень	Laziness	Исчезнувшее или использованное Колесо Фортуны с вероятностью [Value]% починит ваше устройство, если вы один из [Value2] лидеров.	If Wheel of Fortune disappears or is used, [Value]% chance to repair your device if you are among top [Value2] leaders.
+a1	Пистолет	Gun	Сломать устройства [Value] игроков перед собой.	Break devices of [Value] players ahead of you.
+a2	Ловушка	Trap	Сломать устройства [Value] игроков за собой.	Break devices of [Value] players behind you.
+a3	Кошелёк	Wallet	Получить бонус в [Value] очков.	Gain +[Value] points.
+a4	Плащ	Cloak	Не получать очки до [Value] следующих смертей. Затем получить x[Value] от накрученных очков.	Earn no points until [Value] next deaths. Then gain x[Value] of the points accumulated in that period.
+a5	Щит	Shield	Игнорировать следующие [Value] штрафа и вместо этого получить за них очки.	Ignore next [Value] penalties and gain points instead. Stacks.

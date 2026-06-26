@@ -23,8 +23,8 @@ public class CameraControl : MonoBehaviour
         float x = transform.rotation.eulerAngles.x;
         float y = transform.rotation.eulerAngles.y;
 
-        x += Input.GetAxis("Mouse Y") * lookSpeed.x * Time.deltaTime;
-        y += Input.GetAxis("Mouse X") * lookSpeed.y * Time.deltaTime;
+        x += Input.GetAxis("Mouse Y") * lookSpeed.x * (MenuManager.Snsitivity + 0.1f) * Time.deltaTime;
+        y += Input.GetAxis("Mouse X") * lookSpeed.y * (MenuManager.Snsitivity + 0.1f) * Time.deltaTime;
 
         if(x > 180)
             x = -(360 - x);

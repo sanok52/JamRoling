@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Object = UnityEngine.Object;
 
 public static class SpinEntryPoint
 {
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     public static void InitGame()
     {
@@ -20,6 +20,8 @@ public static class SpinEntryPoint
         PocketRandomazer.CreatePocket<int>("Random", 15, 21, 31, 45, 55, 69, 81, 99);
 
         G.SpinGameFlow.Init();
+
+        SceneManager.sceneLoaded += (x, y) => InitGame();
     }
 }
 
@@ -29,6 +31,7 @@ public static class G
     public static SpinGameFlow SpinGameFlow;
     public static SpinGamerManager GamerManager;
     public static SpinInterManager SpinInterManager;
+    public static ReciveItemText ReciveItemText;
 
     public static MusicManager MusicManager;
     public static DictorAnimation DictorAnimation;
@@ -51,6 +54,8 @@ public static class G
     public static SpinItemExecuter ItemExecuter;
     public static List<SpinHandle> handlesFixes;
 
+    public static MenuManager MenuManager;
+
     public static void Init()
     {
         Find();
@@ -67,10 +72,13 @@ public static class G
         GameModeUI = Object.FindFirstObjectByType<GameModeUI>(FindObjectsInactive.Include);
         ScreenRemont = Object.FindFirstObjectByType<ScreenRemont>(FindObjectsInactive.Include);
         ScreenVictorin = Object.FindFirstObjectByType<ScreenVictorin>(FindObjectsInactive.Include);
+        MenuManager = Object.FindFirstObjectByType<MenuManager>(FindObjectsInactive.Include);
+        ReciveItemText = Object.FindFirstObjectByType<ReciveItemText>(FindObjectsInactive.Include);
     }
 
     private static void Create()
-    {        GamerManager = new SpinGamerManager();
+    {        
+        GamerManager = new SpinGamerManager();
         MusicManager = new MusicManager();
     }
 

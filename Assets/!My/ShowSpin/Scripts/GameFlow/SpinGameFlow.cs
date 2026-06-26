@@ -3,7 +3,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static SpinObserver;
 
 public class SpinGameFlow : MonoBehaviour
@@ -37,6 +40,8 @@ public class SpinGameFlow : MonoBehaviour
 
     public void Init()
     {
+        Time.timeScale = 1f;
+
         G.FortuneWhell.gameObject.SetActive(false);
         G.spinGamePlay.OnSpin += OnSpinWork;
         G.GamerManager.OnGamerDead += OnGamerDeadWork;
@@ -55,6 +60,7 @@ public class SpinGameFlow : MonoBehaviour
             SpinGameMode.DevicePlayerBreak);
 
         InitFortuneWhell();
+        G.LeaderBoardUI.ChangeProgeressWork(G.GamerManager.GamersScores);
     }
 
     private void GamerDeltaProgressWork(string id, int progress)
@@ -70,7 +76,14 @@ public class SpinGameFlow : MonoBehaviour
 
     private IEnumerator GameFlowRoutine()
     {
-        if (TestBooleans.GetValue("IsPlayIntro"))
+        if (!isSkipStart)
+            yield return MenuRoutine();
+        else
+            G.MenuManager.SetMenuState(false);
+
+        G.spinGamePlay.gameObject.SetActive(true);
+
+        if (TestBooleans.GetValue("IsPlayIntro") && !isSkipStart)
             yield return IntroRoutine(); //Вступление
 
         if (TestBooleans.GetValue("IsPlayGame"))
@@ -107,6 +120,24 @@ public class SpinGameFlow : MonoBehaviour
 
         if (isWin || TestBooleans.GetValue("IsWin"))
             yield return WinRoutine(); //Игрок победил
+        else
+            yield return LoseRoutine();
+    }
+
+    private IEnumerator LoseRoutine()
+    {
+        yield return new WaitForSeconds(10f);
+        CanvasGroup canvasGroup = GameObject.Find("BlackScreen").GetComponent<CanvasGroup>();
+        Image image = canvasGroup.GetComponent<Image>();
+        image.color = Color.black;
+
+        yield return canvasGroup.DOFade(1f, 4f).WaitForCompletion();
+        Reload(true);
+    }
+
+    private IEnumerator MenuRoutine()
+    {
+        yield return G.MenuManager.WaitPlayerAction();
     }
 
     private IEnumerator IntroRoutine()
@@ -142,8 +173,6 @@ public class SpinGameFlow : MonoBehaviour
         isGamePlay = true;
         G.FortuneWhell.UpNow = false;
         G.handlesFixes.ForEach(x => x.enabled = true);
-
-        G.ItemExecuter.AddItemInList("a2");
 
         SetGameMode(SpinGameMode.None, true);
 
@@ -467,21 +496,25 @@ public class SpinGameFlow : MonoBehaviour
         if (fortuneOption1.Contains(index))
         {
             G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[0].ID);
+            G.ReciveItemText.ShowItemInfo(G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[0]));
             Debug.Log($"{G.ItemExecuter.FortuneItems[0].ID} option");
         }
         else if (fortuneOption2.Contains(index))
         {
             G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[1].ID);
+            G.ReciveItemText.ShowItemInfo(G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[1]));
             Debug.Log($"{G.ItemExecuter.FortuneItems[1].ID} option");
         }
         else if (fortuneOption3.Contains(index))
         {
             G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[2].ID);
+            G.ReciveItemText.ShowItemInfo(G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[2]));
             Debug.Log($"{G.ItemExecuter.FortuneItems[2].ID} option");
         }
         else if (fortuneOption4.Contains(index))
         {
             G.ItemExecuter.AddItemInList(G.ItemExecuter.FortuneItems[4].ID);
+            G.ReciveItemText.ShowItemInfo(G.ItemExecuter.GetPureInfo(G.ItemExecuter.FortuneItems[4]));
             Debug.Log($"{G.ItemExecuter.FortuneItems[4].ID} option");
         }
         else
@@ -532,14 +565,26 @@ public class SpinGameFlow : MonoBehaviour
             yield return Speak(item.GetText(DictorSpeachManager.language), item.AnimID);
         }
 
-        GameObject.FindFirstObjectByType<LightAnim>(FindObjectsInactive.Include).gameObject.SetActive(true);
+        LightAnim lightAnim = GameObject.FindFirstObjectByType<LightAnim>(FindObjectsInactive.Include);
+        lightAnim.gameObject.SetActive(true);
 
         yield return Speak(list[list.Count - 3].GetText(DictorSpeachManager.language), list[list.Count - 3].AnimID);
         yield return Speak(list[list.Count - 2].GetText(DictorSpeachManager.language), list[list.Count - 2].AnimID);
         yield return Speak(list[list.Count - 1].GetText(DictorSpeachManager.language), list[list.Count - 1].AnimID);
 
-        yield break;
-        //Катсцена
+        yield return new WaitUntil(() => lightAnim.IsEnd);
+        yield return new WaitForSeconds(1f);
+
+        var thansk = GameObject.Find("Text (End)").gameObject;
+        Vector3 targetScale = thansk.transform.localScale;
+        thansk.transform.localScale = Vector3.zero;
+        thansk.SetActive(true);
+        thansk.GetComponent<TMP_Text>().text = "Thanks for playing!";
+        yield return transform.DOScale(targetScale, 2f).WaitForCompletion();
+
+        yield return new WaitForSeconds(3f);
+
+        Reload(false);
     }
 
     private IEnumerator SpeakIDRoutine (string id)
@@ -728,7 +773,7 @@ public class SpinGameFlow : MonoBehaviour
         if (ignorePenalty > 0)
         {
             ignorePenalty--;
-            G.GamerManager.PlayerProgress(15);
+            G.GamerManager.PlayerProgress(12);
             G.GamerManager.SpinGamers["Player"].View.Shtraf(Color.white);
             return;
         }
@@ -796,7 +841,7 @@ public class SpinGameFlow : MonoBehaviour
                 break;
             case SpinRotateEventType.R1:
                 if (equalGameMode)
-                    G.GamerManager.PlayerProgress((int)(1 + (multyplySup > 1 ? MathF.Pow(1.35f, multyplySup) : 0f)));
+                    G.GamerManager.PlayerProgress((int)(1 + (multyplySup > 1 ? MathF.Pow(1.15f, multyplySup) : 0f)));
                 else
                     Shtraf(0.3f);
                 break;
@@ -939,6 +984,14 @@ public class SpinGameFlow : MonoBehaviour
         G.GamerManager.SpinGamers["Player"].View.TryUpdateMulty(multyplySup);
     }
 
+    private static bool isSkipStart = false;
+    public void Reload(bool isSkipStart)
+    {
+        
+        SpinGameFlow.isSkipStart = isSkipStart;
+        SceneManager.LoadScene("Game", LoadSceneMode.Single);
+    }
+
     private void Update()
     {
 #if UNITY_EDITOR
@@ -957,6 +1010,11 @@ public class SpinGameFlow : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Space))
             IsSkipGamePlay = !IsSkipGamePlay;
 #endif
+
+        if (Input.GetKeyUp(KeyCode.Escape) || Input.GetKeyUp(KeyCode.Tab))
+        {
+            G.MenuManager.SwitchPause();
+        }
 
     }
 }
