@@ -10,7 +10,7 @@ public class SpinGamerManager
     private Dictionary<string, SpinGamer> spinGamers = new Dictionary<string, SpinGamer>();
     private Dictionary<string, int> gamersScores = new Dictionary<string, int>();
     private bool isGamePlay;
-    private Vector2 fastAndSlow = new Vector2(10f, 15f); //fast, slow
+    private Vector2 fastAndSlow = new Vector2(9f, 14f); //fast, slow
 
     public int CountGamers => spinGamers.Values.Where(x => !x.IsDead).Count();
     public Dictionary<string, SpinGamer> SpinGamers => spinGamers;
@@ -76,6 +76,7 @@ public class SpinGamerManager
             }    
 
             OnGamerProgress += item.TryUpdateProgress;
+            OnGamerProgressDelta += item.AddProgressAnim;
 
             if (item.ID == "Player")
             {
@@ -97,7 +98,7 @@ public class SpinGamerManager
                 View = item,
                 coefSin = UnityEngine.Random.Range(0.1f, 1f),
                 offsetSin = UnityEngine.Random.Range(0, 10f),
-                coefSpeed = UnityEngine.Random.Range(3f, 5f) * PocketRandomazer.GetRandomElement<float>("EnemyHard")
+                coefSpeed = UnityEngine.Random.Range(3.8f, 4.4f) * PocketRandomazer.GetRandomElement<float>("EnemyHard")
             });
         }
         
@@ -105,6 +106,9 @@ public class SpinGamerManager
         if (spinGamers["Player"].View == null)
         {
             spinGamers["Player"].View = views.First(x => x.ID == "Player");
+
+            OnGamerProgress += spinGamers["Player"].View.TryUpdateProgress;
+            OnGamerProgressDelta += spinGamers["Player"].View.AddProgressAnim;
         }
     }
 
@@ -143,6 +147,8 @@ public class SpinGamerManager
 
     float speedTimer = 0f;
     bool isFast;
+    public float CoefHard = 1f;
+    public static bool EasyMode;
 
     public void Update()
     {
@@ -171,27 +177,40 @@ public class SpinGamerManager
 
             float deltaC = 1f;
             int deltaAtPlayer = gamersScores["Player"] - gamersScores[gamer.ID];
+
+            bool isFog = G.SpinGameFlow.GameMode == SpinGameFlow.SpinGameMode.Fog;
+            bool easy = EasyMode && !isFog;
+
             if (deltaAtPlayer < -7)
             {
                 if (deltaAtPlayer < -25)
-                    deltaC = 0.25f;
+                    deltaC = easy ? 0.15f : 0.25f;
                 else
-                    deltaC = 0.7f;
+                    deltaC = easy ? 0.5f : 0.7f;
             }
-            else if (deltaAtPlayer > 10)
-                deltaC = 1.1f;
+            else if (deltaAtPlayer > 15)
+                deltaC = easy ? 0.9f : 1.1f;
             else if (deltaAtPlayer > 20)
-                deltaC = 1.3f;
+                deltaC = easy ? 1.1f : 1.5f;
             else if (deltaAtPlayer > 30)
-                deltaC = 1.5f;
-
-            bool isFog = G.SpinGameFlow.GameMode == SpinGameFlow.SpinGameMode.Fog;
+                deltaC = easy ? 1.45f : 1.8f;
+            else if (deltaAtPlayer > 50)
+                deltaC = 2.4f;
 
             deltaC *= isFast ? 1f : 0.65f;
+            deltaC *= CoefHard;
 
-            int progress = gamer.Progress(deltaC * (isFog ? 0.1f : 1f));
+            if(deltaAtPlayer > -10 && deltaAtPlayer < 40)
+            {
+                if (EasyMode && isFog == false)
+                    deltaC *= 0.8f;
+                else if (!EasyMode)
+                    deltaC *= 0.95f;
+            }
+
+            int progress = gamer.Progress(deltaC * (isFog ? (EasyMode ? 0.07f : 0.12f) : 1f));
             if(progress > 0)
-                GamerProgress(gamer.ID, progress * (isFog ? 20 : progress));
+                GamerProgress(gamer.ID, progress * (isFog ? 25 : progress));
         }
     }
 

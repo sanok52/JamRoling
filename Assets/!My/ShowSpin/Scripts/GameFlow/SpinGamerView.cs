@@ -23,6 +23,11 @@ public class SpinGamerView : MonoBehaviour
     public AudioSource[] remontSources;
     public static List<SpinGamerView> brokeList = new List<SpinGamerView>();
 
+    [Space]
+    public AudioSource audioSource;
+    public AudioDataPlay proggersDataPlay;
+    public AudioDataPlay penaltyDataPlay;
+
     public bool IsBroke { get; private set; }
 
     private void Start()
@@ -133,6 +138,25 @@ public class SpinGamerView : MonoBehaviour
     public void Shtraf()
     {
         Shtraf(Color.red);
+    }
+
+    public void AddProgressAnim(string id, int add)
+    {
+        if (id != ID)
+            return;
+
+        AddProgressAnim(add);
+    }
+
+    public void AddProgressAnim (int add)
+    {
+        if (audioSource == null)
+            return;
+
+        if(add > 0)
+            audioSource.Play(proggersDataPlay);
+        else
+            audioSource.Play(penaltyDataPlay);
     }
 
     public void Shtraf(Color color)

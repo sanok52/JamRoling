@@ -67,8 +67,8 @@ public class SpinItemExecuter : MonoBehaviour
 
     public SpinItemInfo GetPureInfo (SpinItemInfo info)
     {
-        string keyInfo = DictorSpeachManager.language == Language.RU ? "InfoRU" : "InfoEN";
-        string keyName = DictorSpeachManager.language == Language.RU ? "NameRU" : "NameEN";
+        string keyInfo = DictorSpeachManager.Language == Language.RU ? "InfoRU" : "InfoEN";
+        string keyName = DictorSpeachManager.Language == Language.RU ? "NameRU" : "NameEN";
         var infoTxt = TSVReader.GetIdLineAsDict(textAsset, info.ID);
 
         return new SpinItemInfo()

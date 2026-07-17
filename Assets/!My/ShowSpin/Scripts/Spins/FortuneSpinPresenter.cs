@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class FortuneSpinPresenter : MonoBehaviour, ITaggable
 {
@@ -21,6 +22,12 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
 
     [SerializeField] private List<string> tags;
     public List<string> Tags => tags;
+
+    [Space]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioDataPlay AnimDownDataPlay;
+    [SerializeField] private AudioDataPlay AnimUpDataPlay;
+    [SerializeField] private AudioDataPlay PunchDataPlay;
 
     public event Action OnEndSpin;
     public event Action OnNoChoice;
@@ -49,6 +56,8 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
     private IEnumerator AnimationRoutine(bool isFast = false)
     {
         SetCanRule(false);
+
+        audioSource.Play(AnimDownDataPlay);
 
         yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, 0f, transform.localPosition.z), 0.65f)
             .SetEase(Ease.InSine).WaitForCompletion();
@@ -92,14 +101,19 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
                 wait += Time.deltaTime;
             }
 
+            DOVirtual.DelayedCall(0.2f, () => audioSource.PlayOneShot(PunchDataPlay));
+
             yield return transform.DOPunchScale(Vector3.one * 0.35f, 0.4f).WaitForCompletion();
             yield return new WaitForSeconds(isFast ? 0.5f : 3f);
         }
 
+        audioSource.Play(AnimUpDataPlay);
+
         var anUp = transform.DOLocalMove(new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z), 0.45f)
                     .SetEase(Ease.InOutSine).WaitForCompletion();
+
         //if (!isFast)
-            yield return anUp;
+        yield return anUp;
 
         if (noChoice && !UpNow)
         {
@@ -143,5 +157,14 @@ public class FortuneSpinPresenter : MonoBehaviour, ITaggable
 
         deltaRotate = deltaNow / Time.deltaTime;
         SetCanRule(false);
+    }
+
+    public void Break()
+    {
+        StopAllCoroutines();
+        UpNow = false;
+        transform.localPosition = new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z);
+        OnNoChoice?.Invoke();
+        OnEndSpin?.Invoke();
     }
 }

@@ -484,4 +484,11 @@ public class TextTyper : MonoBehaviour
 
         return new ParseResult { cleanText = clean.ToString(), commands = cmds.ToArray() };
     }
+
+    public IEnumerator BreakCurrentOperation()
+    {
+        StopAllEffects();
+        ClearImmidiatly();
+        yield return new WaitForEndOfFrame();
+    }
 }

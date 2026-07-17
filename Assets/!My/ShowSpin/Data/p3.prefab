@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b252e11410555d488eb1d11ce3bab72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FortuneBrokenBonusBeh
-  coins: 40
+  coins: 70

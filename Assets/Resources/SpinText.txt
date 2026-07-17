@@ -1,9 +1,10 @@
 ID (eng)	Category_EN	RU	ENG	Animation
 intro_welcome	Narrative_Intro	Добро пожаловать на Spin on Pin!	Welcome to Spin on Pin!	Pride
-intro_welcome1	Narrative_Intro	На этот раз у нас в гостях несколько заблудших душ с разных стран и материков. Урожай богатый — ничего не скажешь.	Welcome to Spin on Pin! This time we have several lost souls from different countries and continents. A rich harvest, no doubt.	OpenHand
+intro_welcome1	Narrative_Intro	На этот раз у нас в гостях несколько заблудших душ с разных стран и материков. Урожай богатый - ничего не скажешь.	This time we have several lost souls from different countries and continents. A rich harvest, no doubt.	OpenHand
 intro_welcome2	Narrative_Intro	Вы умерли, дорогие гости, и ваши правительства продали вас на вечные муки для поддержания нашего с ними давнего соглашения. Но принимать души просто так будет скучно, поэтому вы будете соревноваться друг с другом за спасение единственного, что у вас осталось! Отнеситесь к этому серьёзно... Очень серьёзно.	You are dead, dear guests, and your governments sold you into eternal torment to uphold our long-standing agreement with them. But receiving souls without fun is boring, so you will compete against each other to save the only thing you have left! Take this seriously… Very seriously.	Cool
 intro_explain	Narrative_Intro	Начнём с азов. По вашему запаху уже мчатся Адские Псы, и вам нужно как можно быстрее крутить колесо. Самого последнего ждёт его именной котёл по адресу: улица Вечных мук, 14.	Let's start with the basics. The Hellhounds are already racing towards your scent, and you need to spin the wheel as fast as you can – the last one will be greeted by his personal cauldron at 14 Eternal Torment Street.	Devil
-intro_explain	Narrative_Intro	Вас будет ждать ещё много сюрпризов, что поднимет настроение и мне, и многим другим зрителям, но вы о них узнаете только в процессе... Приступим!	Many more surprises await you, which will lift my spirits and those of many other viewers, but you'll only find out about them along the way… Let's begin!	Messia
+intro_explain2	Narrative_Intro	И помните! Правила этой игры не постоянные, потому что здесь их устанавливаю только я. Так что ВНИМАТЕЛЬНО СМОТРИТЕ НА ЭКРАН И СЛУШАЙТЕ ЧТО Я ГОВОРЮ, НИЧТОЖНЫЕ!...	And remember! The rules of this game are not permanent, because I'm the only one setting them here. So TAKE A GOOD LOOK AT THE SCREEN AND LISTEN TO WHAT I'M SAYING, INSIGNICANT!..	Evil
+intro_explain3	Narrative_Intro	Что ж... Вас будет ждать ещё много сюрпризов, что поднимет настроение и мне, и многим другим зрителям, но вы о них узнаете только в процессе... Приступим!	Anyway, many more surprises await you, which will lift my spirits and those of many other viewers, but you'll only find out about them along the way… Let's begin!	Messia
 dogs_awake_1	Dogs_Awake	Адские Псы! Адские Псы! Спасайся кто может!	Hellhounds! Hellhounds! Run for your lives!	Evil
 dogs_awake_2	Dogs_Awake	Псы проснулись и жаждут мяса!	The hounds are awake and crave flesh!	Evil
 dogs_awake_3	Dogs_Awake	Одно слово: Бегите!	One word: Run!	Evil
@@ -13,12 +14,12 @@ dogs_sleep_3	Dogs_Sleep	Поберегите силы, друзья, они ва
 direction_1	Direction_Change	А теперь... в другую сторону!	And now... the other way!	TikTak
 direction_2	Direction_Change	Назад!	Back!	TikTak2
 direction_3	Direction_Change	Не туда — не туда!	Wrong way – wrong way!	TikTak
-broken_1	Device_Broken	Ха... похоже, [Player_Name], сегодня тебе не везёт!	Ha... looks like [Player_Name], luck isn't on your side today!	Smile4
-broken_2	Device_Broken	Не спеши, [Player_Name], сейчас к тебе придут наши инженеры... это был сарказм, если что.	Don't rush, [Player_Name], our engineers are coming to you right now... that was sarcasm, by the way.	Smile3
-broken_3	Device_Broken	Ты что, [Player_Name], помереть захотел?	What, [Player_Name], do you want to die?	What
-fixed_1	Device_Fixed	Кажется, [Player_Name] не из собачников.	Looks like [Player_Name] is not a dog person.	Think
+broken_1	Device_Broken	Ха... похоже, [Broke_Player], сегодня тебе не везёт!	Ha... looks like [Broke_Player], luck isn't on your side today!	Smile4
+broken_2	Device_Broken	Не спеши, [Broke_Player], сейчас к тебе придут наши инженеры... это был сарказм, если что.	Don't rush, [Broke_Player], our engineers are coming to you right now... that was sarcasm, by the way.	Smile3
+broken_3	Device_Broken	Ты что, [Broke_Player], помереть захотел?	What, [Broke_Player], do you want to die?	What
+fixed_1	Device_Fixed	Кажется, [Fix_Player] не из собачников.	Looks like [Fix_Player] is not a dog person.	Think
 fixed_2	Device_Fixed	Что? Так быстро?!	What? So fast?!	What
-fixed_3	Device_Fixed	Эй, [Player_Name], я поставил на твой проигрыш!	Hey, [Player_Name], I bet on your loss!	Forget
+fixed_3	Device_Fixed	Эй, [Fix_Player], я поставил на твой проигрыш!	Hey, [Fix_Player], I bet on your loss!	Forget
 fortune_1	Fortune_Wheel	Крути колесо — поцелуй удачу!	Spin the wheel – kiss luck!	You
 fortune_2	Fortune_Wheel	Кому сегодня повезёт?	Who will be lucky today?	You2
 fortune_3	Fortune_Wheel	Даже в Аду может повезти...	Even in Hell, luck can strike...	Smile

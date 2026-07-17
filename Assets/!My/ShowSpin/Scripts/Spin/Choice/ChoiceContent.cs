@@ -14,6 +14,10 @@ public class ChoiceContent : MonoBehaviour, ITaggable
     [Space]
     [SerializeField] private bool isMirror;
 
+    [Space]
+    [SerializeField] private AudioSource selectSource;
+    [SerializeField] private AudioDataPlay SelectDataPlay;
+
     private Dictionary<ChoicesInChoiceContent, ChoiceElementGO> elementGOs = new Dictionary<ChoicesInChoiceContent, ChoiceElementGO>();
 
     [SerializeField] private List<string> tags;
@@ -79,6 +83,7 @@ public class ChoiceContent : MonoBehaviour, ITaggable
         UpdateChoiceTarget();
     }
 
+    int prevSelectIndex = 0;
     private void UpdateChoiceTarget()
     {
         var index = GetCurrentChoiceIndex();
@@ -91,6 +96,9 @@ public class ChoiceContent : MonoBehaviour, ITaggable
         }
 
         //Debug.Log(gameObject.name + ": " + debug);
+        if (index != prevSelectIndex)
+            selectSource.Play(SelectDataPlay);
+        prevSelectIndex = index;
     }
 
     public int GetCurrentChoiceIndex()

@@ -9,9 +9,16 @@ public class ScreenVictorin : MonoBehaviour
     [SerializeField] private float waitAnser = 15f;
     [SerializeField] private TextTyper textTyper;
 
+    [Space]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioDataPlay rightAnserDataPlay;
+    [SerializeField] private AudioDataPlay wrongAnserDataPlay;
+    [SerializeField] private AudioDataPlay timerTickDataPlay;
+
+    int prevTick = 0; 
     public IEnumerator StartQuiz(SpinVictorinQuest quest, float waitTarget = -1f)
     {
-        SetQuizText(quest.GetText(DictorSpeachManager.language));
+        SetQuizText(quest.GetText(DictorSpeachManager.Language));
 
         float wait = 0f;
         if (waitTarget <= 0)
@@ -19,7 +26,12 @@ public class ScreenVictorin : MonoBehaviour
 
         while (wait < waitTarget) 
         {
-            tmpTimer.text = System.Math.Round(waitTarget - wait, 0).ToString();
+            int tick = (int)System.Math.Round(waitTarget - wait, 0);
+            tmpTimer.text = tick.ToString();
+
+            if(tick != prevTick)
+                audioSource.PlayOneShot(timerTickDataPlay, timerTickDataPlay.volume * Mathf.Clamp((wait / waitAnser), 0.5f, 1f));
+            prevTick = tick;
 
             yield return null;
             wait += Time.deltaTime;
@@ -53,5 +65,10 @@ public class ScreenVictorin : MonoBehaviour
         yield return new WaitForSeconds(1f + (itemInfoPure.Description.Length * 0.05f));
 
         yield return textTyper.PlayClearText();
+    }
+
+    public void PlayAnserSound (bool isRight)
+    {
+        audioSource.Play(isRight ? rightAnserDataPlay : wrongAnserDataPlay);
     }
 }

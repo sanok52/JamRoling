@@ -3,44 +3,53 @@ using UnityEngine;
 
 public class CameraControl : MonoBehaviour
 {
-    [SerializeField] private Vector2 lookSpeed = new Vector2(10f, 10f);
-    [SerializeField] private Vector2 rotateClampX = new Vector2(-90f, 90f);
-    [SerializeField] private Vector2 rotateClampY = new Vector2(-90f, 90f);
+    [SerializeField] private Vector2 lookSpeed = new Vector2(10f, 10f); // масштаб для X и Y
+    [SerializeField] private Vector2 rotateClampX = new Vector2(-90f, 90f); // pitch
+    [SerializeField] private Vector2 rotateClampY = new Vector2(-90f, 90f); // yaw
+
+    private float pitch; // x
+    private float yaw;   // y
 
     void Start()
     {
+        Vector3 e = transform.rotation.eulerAngles;
+        pitch = NormalizeAngle(e.x);
+        yaw = NormalizeAngle(e.y);
+
         Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
-       DOVirtual.DelayedCall(Time.deltaTime, () =>  
-       transform.rotation = Quaternion.Euler((rotateClampX.x + rotateClampX.y) / 2,
-            (rotateClampY.x + rotateClampY.y) / 2, 
-            transform.rotation.eulerAngles.z));
+        DOVirtual.DelayedCall(Time.deltaTime, () =>
+        {
+            pitch = (rotateClampX.x + rotateClampX.y) * 0.5f;
+            yaw = (rotateClampY.x + rotateClampY.y) * 0.5f;
+            transform.rotation = Quaternion.Euler(pitch, yaw, transform.rotation.eulerAngles.z);
+        });
     }
-
 
     void Update()
     {
-        float x = transform.rotation.eulerAngles.x;
-        float y = transform.rotation.eulerAngles.y;
+        if (G.MenuManager.IsMenu || G.MenuManager.IsPause)
+            return;
 
-        x += Input.GetAxis("Mouse Y") * lookSpeed.x * (MenuManager.Snsitivity + 0.1f) * Time.deltaTime;
-        y += Input.GetAxis("Mouse X") * lookSpeed.y * (MenuManager.Snsitivity + 0.1f) * Time.deltaTime;
+        // Берём уже подготовленные значения из SettingsManager
+        float mouseX = SettingsManager.MouseXLook; // = Input.GetAxis("Mouse X") * SensitivityLook * coefLook
+        float mouseY = SettingsManager.MouseYLook; // = Input.GetAxis("Mouse Y") * SensitivityLook * coefLook
 
-        if(x > 180)
-            x = -(360 - x);
-        if(y > 180)
-            y = -(360 - y);
+        // НЕ умножаем на Time.deltaTime — это дельта за кадр
+        yaw += mouseX * lookSpeed.y;
+        pitch += -mouseY * lookSpeed.x; // минус для стандартного поведения (поднять мышь — смотреть вверх)
 
-        if (x < 0f) 
-            x = Mathf.Clamp(360 + x, 360 + rotateClampX.x, 360);
-        else
-            x = Mathf.Clamp(x, 0, rotateClampX.y);
+        // Ограничения
+        pitch = Mathf.Clamp(pitch, rotateClampX.x, rotateClampX.y);
+        yaw = NormalizeAngle(yaw);
+        yaw = Mathf.Clamp(yaw, rotateClampY.x, rotateClampY.y);
 
-        if (y < 0f)
-            y = Mathf.Clamp(360 + y, 360 + rotateClampY.x, 360);
-        else
-            y = Mathf.Clamp(y, 0, rotateClampY.y);
+        transform.rotation = Quaternion.Euler(pitch, yaw, transform.rotation.eulerAngles.z);
+    }
 
-        transform.rotation = Quaternion.Euler(x, y, transform.rotation.eulerAngles.z);
+    private float NormalizeAngle(float angle)
+    {
+        return Mathf.Repeat(angle + 180f, 360f) - 180f;
     }
 }

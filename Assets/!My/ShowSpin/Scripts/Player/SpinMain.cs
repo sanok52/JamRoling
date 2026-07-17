@@ -9,7 +9,17 @@ public class SpinMain : MonoBehaviour, ITaggable
     private Vector3 defaultUp;
 
     [SerializeField] private List<string> tags;
+
+    [Space]
+    [SerializeField] private AudioSource sourceTick;
+    [SerializeField] private AudioDataPlay tickDataPlay;
+    [SerializeField] private Vector2 distanceTick = new Vector2(10, 30);
+    [SerializeField] private float distanceTickSound = 5f;
+    [SerializeField] private float delayTick = 0.5f;
+    [SerializeField] private bool isSoundSpeedUp;
+
     public float CurrentAngle { get; private set; }
+    public float CurrentSpeed { get; private set; }
 
     public List<string> Tags => tags;
 
@@ -64,6 +74,8 @@ public class SpinMain : MonoBehaviour, ITaggable
             CurrentAngle = 360 + angleEv;
 
         onSpin?.Invoke(CurrentAngle);
+
+        TryPlayTick(angle);
     }
 
     private float ClampFloatInVector(float z)
@@ -71,5 +83,60 @@ public class SpinMain : MonoBehaviour, ITaggable
         if (Mathf.Abs(z) < 0.01f)
             return 0f;
         return z;
+    }
+
+    float prevTickAudioAnlge = 0f;
+    float prevTickAudioTime = 0f;
+
+    float prevTickSpeed;
+    float prevTickAngle;
+    float currentAngleAbs;
+
+    public void TryPlayTick(float angle)
+    {
+        currentAngleAbs += angle * Time.deltaTime;
+
+        if (Time.time - prevTickSpeed > delayTick)
+        {
+            CurrentSpeed =  Mathf.Abs(prevTickAngle - currentAngleAbs);
+            prevTickSpeed = Time.time;
+            prevTickAngle = currentAngleAbs;
+        }
+
+        if (sourceTick == null)
+            return;
+
+        if (SpinObserver.GetAngleDelta(prevTickAudioAnlge, CurrentAngle) > distanceTickSound &&
+            Time.time - prevTickAudioTime > delayTick)
+        {
+            PlayTick(Mathf.Abs(CurrentSpeed));
+        }
+    }
+
+    private void PlayTick(float currentSpeed)
+    {
+        prevTickAudioAnlge = CurrentAngle;
+        prevTickAudioTime = Time.time;
+
+        if (isSoundSpeedUp)
+        {
+            float coef = Mathf.Clamp01(Mathf.Abs(currentSpeed - distanceTick.x) / (distanceTick.y - distanceTick.x));
+
+            float sinTime = Mathf.Lerp(0.7f, 1f, Mathf.Sin(Time.time));
+            float cosTime = Mathf.Lerp(0.7f, 1f, Mathf.Cos(Time.time));
+
+            float vol = tickDataPlay.GetVolume() * Mathf.Lerp(0.4f, 1f, coef) * sinTime;
+            float pitch = tickDataPlay.GetPitch() * Mathf.Lerp(0.5f, 2f, coef) * cosTime;
+
+            //Debug.Log($"{currentSpeed} {coef} {vol} {pitch}");
+
+            sourceTick.pitch = pitch;
+            sourceTick.volume = vol;
+            sourceTick.clip = tickDataPlay.GetClip();
+            sourceTick.PlayOneShot(sourceTick.clip);
+            //sourceTick.PlayOneShot(tickDataPlay.GetClip(), vol);
+        }
+        else
+            sourceTick.PlayOneShot(tickDataPlay);
     }
 }

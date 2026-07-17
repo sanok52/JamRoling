@@ -14,7 +14,7 @@ public class ReciveItemText : MonoBehaviour
 
     public void ShowItemInfo (SpinItemInfo itemInfo)
     {
-        tmp_item.text += $"<b>{itemInfo.Name}!</b>\n" +
+        tmp_item.text = $"<b>{itemInfo.Name}!</b>\n" +
             $"{itemInfo.Description}";
         if (coroutine != null)
             StopCoroutine(coroutine);

@@ -44,5 +44,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91fc2c24f17d0b34091217427cc5ccac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PenaltyLeadersBeh
-  procent: 25
-  leaders: 3
+  procent: 35
+  leaders: 5

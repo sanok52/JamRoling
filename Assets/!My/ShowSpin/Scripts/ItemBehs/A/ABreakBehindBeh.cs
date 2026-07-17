@@ -24,11 +24,9 @@ public class ABreakBehindBeh : SpinItemBehaviour
             }
         }
 
-        int start = Mathf.Clamp(playerIndex + distance, 0, leaders.Length);
-        Debug.Log($"{playerIndex} => {playerIndex + distance}");
-        for (int i = 0; i < distance && leaders.Length > start - i; i++)
+        for (int i = 1; i <= distance && playerIndex + i < leaders.Length; i++)
         {
-            G.GamerManager.Broke(leaders[start - i].ID, true);
+            G.GamerManager.Broke(leaders[playerIndex + i].ID, true);
         }
     }
 }

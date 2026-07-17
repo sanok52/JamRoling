@@ -16,7 +16,11 @@ public class SpinHandle : SpinInterMoveble, ITaggable
 
     [Space]
     [SerializeField] private List<string> tags = new List<string>();
+
+    private Vector2 spinInput; // хранит текущую дельту мыши дл€ спина
+
     public List<string> Tags => tags;
+    public float CoefRadius { get => coefRadius; set => coefRadius = value; }
 
     private void Start()
     {
@@ -33,33 +37,74 @@ public class SpinHandle : SpinInterMoveble, ITaggable
         StartCoroutine(UpdatePos());
     }
 
+    float webCradCoef = 10f;
     private IEnumerator UpdatePos()
     {
         while (true)
         {
             if (!isMove)
             {
-                yield return null;
+                // если не двигаемс€ Ч ждЄм следующий FixedUpdate, чтобы не блокировать цикл
+                yield return new WaitForFixedUpdate();
                 continue;
             }
 
-            Vector3 offsetVector = new Vector3(Input.GetAxis("Mouse X") * (MenuManager.Snsitivity + 0.1f), 0, 
-                Input.GetAxis("Mouse Y") * (MenuManager.Snsitivity + 0.1f))
-                * speedOffset * Time.fixedDeltaTime;
+            // используем заранее считанные значени€ (обновл€ютс€ в Update)
+            Vector3 offsetVector = new Vector3(spinInput.x, 0f, spinInput.y)
+                * speedOffset * Time.fixedDeltaTime / 2f;
 
-            if (coefRadius <= 1f)
-                pointTarget = Vector3.Lerp(spinMain.transform.position, pointTarget, coefRadius);
+            float crad = coefRadius / 1.2f;
+
+#if UNITY_WEBGL
+            crad *= webCradCoef;
+#endif
+
+            float sens = SettingsManager.SensitivitySpin;
+
+            if (sens < 0.5f)
+            {
+                float value = Mathf.Lerp(1f, 2.5f, Mathf.Exp(Mathf.Abs(0.5f - sens) / 2.7f));
+                crad *= value;
+            }
             else
-                pointTarget = spinMain.transform.position + ((pointTarget - spinMain.transform.position) * coefRadius);
+            {
+                float value = Mathf.Lerp(1f, 3f, Mathf.Exp(Mathf.Abs(0.5f - sens) / 2.7f));
+                crad /= value;
+            }
+
+            if (crad <= 1f)
+                pointTarget = Vector3.Lerp(spinMain.transform.position, pointTarget, crad);
+            else
+                pointTarget = spinMain.transform.position + ((pointTarget - spinMain.transform.position) * crad);
+
             pointTarget += referenceTr.TransformVector(offsetVector);
 
             pointTarget = (Vector3.ProjectOnPlane(pointTarget - spinMain.transform.position, referenceTr.up).normalized * distHandle) +
-                spinMain.transform.position;
+                          spinMain.transform.position;
 
             spinMain.SetRotation(pointTarget, directionHandle);
 
-            yield return new WaitForSeconds(Time.fixedDeltaTime / 2f);
+            // ждЄм следующий FixedUpdate
+            yield return new WaitForFixedUpdate();
         }
+    }
+
+    // ќбновл€ем ввод в Update, чтобы не тер€ть дельты между FixedUpdate
+    private void Update()
+    {
+        // SettingsManager.MouseXSpin/MouseYSpin уже = Input.GetAxis(...) * SensitivitySpin * coefSpin
+        spinInput.x = SettingsManager.MouseXSpin;
+        spinInput.y = SettingsManager.MouseYSpin;
+
+        /*float acc = Input.GetAxis("Mouse ScrollWheel");
+        if (Mathf.Abs(acc) > 0.05f)
+        {
+            webCradCoef += Mathf.Clamp(acc, 0.2f, 1f);
+            G.ReciveItemText.ShowItemInfo(new SpinItemInfo() { Description = $"webCradCoef {webCradCoef}" });
+        }
+
+        if(Input.GetKeyUp(KeyCode.Q))
+            G.ReciveItemText.ShowItemInfo(new SpinItemInfo() { Description = $"webCradCoef {webCradCoef}" });*/
     }
 
     public override void InterHoldEnter()
@@ -73,4 +118,5 @@ public class SpinHandle : SpinInterMoveble, ITaggable
         if(isMove)
             Gizmos.DrawWireSphere(pointTarget, 0.05f);
     }
+
 }

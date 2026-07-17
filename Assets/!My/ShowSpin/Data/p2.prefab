@@ -44,4 +44,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b191ddf72e1b484a8954f71d2a8bc0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FortuneOnBreak
-  procent: 55
+  procent: 75

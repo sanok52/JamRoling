@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class SpinUpObjectAnimation : MonoBehaviour, ITaggable
 {
@@ -11,6 +12,11 @@ public class SpinUpObjectAnimation : MonoBehaviour, ITaggable
 
     [SerializeField] private List<string> tags;
     public List<string> Tags => tags;
+
+    [Space]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioDataPlay animDownDataPlay;
+    [SerializeField] private AudioDataPlay animUpDataPlay;
 
     public event Action OnAnimationEnd;
 
@@ -36,6 +42,8 @@ public class SpinUpObjectAnimation : MonoBehaviour, ITaggable
     {
         transform.localPosition = new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z);
 
+        audioSource.Play(animDownDataPlay);
+
         yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, 0f, transform.localPosition.z), 0.65f)
             .SetEase(Ease.InSine).WaitForCompletion();
         yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, 0.5f, transform.localPosition.z), 0.15f)
@@ -43,16 +51,25 @@ public class SpinUpObjectAnimation : MonoBehaviour, ITaggable
         yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, 0f, transform.localPosition.z), 0.15f)
             .SetEase(Ease.InSine).WaitForCompletion();
 
+        audioSource.Stop();
+
         yield return transform.DOPunchScale(Vector3.one * 0.35f, 0.4f).WaitForCompletion();
         yield return new WaitForSeconds(3f);
+
 
         OnAnimationEnd?.Invoke();
     }
 
     public IEnumerator AnimationUpRoutine()
     {
-        yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z), 0.25f)
+        audioSource.Play(animUpDataPlay);
+
+        yield return transform.DOLocalMove(new Vector3(transform.localPosition.x, offsetY, transform.localPosition.z), 0.5f)
             .SetEase(Ease.InOutSine).WaitForCompletion();
+
+
+        audioSource.Stop();
+
         gameObject.SetActive(false);
     }
 }

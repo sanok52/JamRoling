@@ -14,10 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SFXData
   MusicGamePlay:
   - ID: GamePlay
-    clip: {fileID: 8300000, guid: 0381d4e91f8f4764884cd2c67cdfdf75, type: 3}
+    clip: {fileID: 8300000, guid: d307714e6902e674e8d20f543b1dc4d3, type: 3}
     additionClips: []
     volume: 0.25
     pitch: 1
+    loop: 1
+    spatialBlend: 0.8
+    rolloffMode: 0
+    dopplerLevel: 0
+    randomPitchOffset: {x: 0, y: 0}
+    randomVolumeOffset: {x: 0, y: 0}
+    useReverb: 0
+    preset: 0
+    MixerGroop: {fileID: 0}
+  - ID: Menu
+    clip: {fileID: 8300000, guid: dcdfe0948d63f954b9c83565cbb30354, type: 3}
+    additionClips: []
+    volume: 0.2
+    pitch: 0.5
     loop: 1
     spatialBlend: 0.8
     rolloffMode: 0

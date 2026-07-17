@@ -6,6 +6,12 @@ using Object = UnityEngine.Object;
 public static class SpinEntryPoint
 {
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    public static void Init()
+    {
+        SceneManager.sceneLoaded += (x, y) => InitGame();
+        InitGame();
+    }
+    
     public static void InitGame()
     {
         G.Init();
@@ -20,8 +26,6 @@ public static class SpinEntryPoint
         PocketRandomazer.CreatePocket<int>("Random", 15, 21, 31, 45, 55, 69, 81, 99);
 
         G.SpinGameFlow.Init();
-
-        SceneManager.sceneLoaded += (x, y) => InitGame();
     }
 }
 
@@ -53,6 +57,7 @@ public static class G
     public static ScreenVictorin ScreenVictorin;
     public static SpinItemExecuter ItemExecuter;
     public static List<SpinHandle> handlesFixes;
+    public static List<SpinHandle> handlesMain;
 
     public static MenuManager MenuManager;
 
@@ -99,10 +104,13 @@ public static class G
 
         SpinHandle[] handles = Object.FindObjectsByType<SpinHandle>(FindObjectsInactive.Include, FindObjectsSortMode.InstanceID);
         handlesFixes = new List<SpinHandle>();
+        handlesMain = new List<SpinHandle>();
         foreach (var handle in handles)
         {
             if (handle.Tags.Contains("FixHandle"))
                 handlesFixes.Add(handle);
+            else if (handle.Tags.Contains("MainHandle"))
+                handlesMain.Add(handle);
         }
 
         FortuneSpinPresenter[] fortunes = Object.FindObjectsByType<FortuneSpinPresenter>(FindObjectsInactive.Include,
